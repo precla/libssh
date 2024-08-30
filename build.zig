@@ -1,4 +1,3 @@
-
 const builtin = @import("builtin");
 const std = @import("std");
 const Path = std.Build.LazyPath;
@@ -16,7 +15,7 @@ pub fn build(b: *std.Build) void {
 
     const config_header = b.addConfigHeader(
         .{
-            .style = .{ .cmake = .{ .path = "config.h.cmake" } },
+            .style = .{ .cmake = b.path("config.h.cmake") },
             .include_path = "config.h",
         },
         .{
@@ -119,6 +118,11 @@ pub fn build(b: *std.Build) void {
     );
     lib.addConfigHeader(config_header);
 
+    const dep_libmbedtls = b.dependency("libmbedtls", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
     var source_files = std.ArrayList([]const u8).init(b.allocator);
     defer source_files.deinit();
     var flags = std.ArrayList([]const u8).init(b.allocator);
@@ -216,10 +220,13 @@ pub fn build(b: *std.Build) void {
         .files = source_files.items,
         .flags = flags.items,
     });
-    lib.addIncludePath(.{ .path = "include" });
+    lib.addIncludePath(b.path("include"));
+    lib.linkLibrary(dep_libmbedtls.artifact("mbedcrypto"));
+    lib.linkLibrary(dep_libmbedtls.artifact("mbedtls"));
+    lib.linkLibrary(dep_libmbedtls.artifact("mbedx509"));
     lib.linkLibC();
 
-    lib.installHeadersDirectory("include/libssh", "libssh");
+    lib.installHeadersDirectory(b.path("include/libssh"), "libssh", .{});
 
     b.installArtifact(lib);
 }
