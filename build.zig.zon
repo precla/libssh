@@ -21,10 +21,11 @@
         },
     },
     .paths = .{
-        "LICENSE",
+        "COPYING",
         "README.md",
         "build.zig",
+        "build.zig.zon",
         "include",
-        "library",
+        "config.h.cmake",
     },
 }
