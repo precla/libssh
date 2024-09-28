@@ -119,7 +119,7 @@ pub fn build(b: *std.Build) void {
 
     const version_header = b.addConfigHeader(.{
         .style = .{ .cmake = b.path("include/libssh/libssh_version.h.cmake") },
-        .include_path = "libssh_version.h"
+        .include_path = "libssh/libssh_version.h"
         }, .{
         .libssh_VERSION_MAJOR=0,
         .libssh_VERSION_MINOR=11,
