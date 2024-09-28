@@ -27,5 +27,6 @@
         "build.zig.zon",
         "include",
         "config.h.cmake",
+        "src",
     },
 }
