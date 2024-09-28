@@ -116,7 +116,18 @@ pub fn build(b: *std.Build) void {
             .WORDS_BIGENDIAN = false
         },
     );
+
+    const version_header = b.addConfigHeader(.{
+        .style = .{ .cmake = b.path("include/libssh/libssh_version.h.cmake") },
+        .include_path = "libssh_version.h"
+        }, .{
+        .LIBSSH_VERSION_MAJOR=0,
+        .LIBSSH_VERSION_MINOR=11,
+        .LIBSSH_VERSION_MICRO=0,
+    });
+
     lib.addConfigHeader(config_header);
+    lib.addConfigHeader(version_header);
 
     const dep_libmbedtls = b.dependency("libmbedtls", .{
         .target = target,
@@ -227,6 +238,7 @@ pub fn build(b: *std.Build) void {
     lib.linkLibC();
 
     lib.installHeadersDirectory(b.path("include/libssh"), "libssh", .{});
+    lib.installHeader(version_header.getOutput(), "libssh/libssh_version.h");
 
     b.installArtifact(lib);
 }
