@@ -121,9 +121,9 @@ pub fn build(b: *std.Build) void {
         .style = .{ .cmake = b.path("include/libssh/libssh_version.h.cmake") },
         .include_path = "libssh_version.h"
         }, .{
-        .LIBSSH_VERSION_MAJOR=0,
-        .LIBSSH_VERSION_MINOR=11,
-        .LIBSSH_VERSION_MICRO=0,
+        .libssh_VERSION_MAJOR=0,
+        .libssh_VERSION_MINOR=11,
+        .libssh_VERSION_PATCH=0,
     });
 
     lib.addConfigHeader(config_header);
