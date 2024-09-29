@@ -187,6 +187,7 @@ pub fn build(b: *std.Build) void {
         "src/socket.c",
         "src/string.c",
         "src/threads.c",
+        "src/ttyopts.c",
         "src/wrapper.c",
         "src/external/bcrypt_pbkdf.c",
         "src/external/blowfish.c",
