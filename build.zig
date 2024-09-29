@@ -196,7 +196,7 @@ pub fn build(b: *std.Build) void {
         "src/pki_ed25519_common.c",
     }) catch unreachable;
 
-    if (t.os.tag == .linux) {
+    if (t.os.tag != .windows) {
         source_files.appendSlice(&.{
             "src/threads/noop.c",
             "src/threads/pthread.c",
