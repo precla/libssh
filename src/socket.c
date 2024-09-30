@@ -99,8 +99,8 @@ struct jump_thread_data_struct {
     socket_t fd;
 };
 
-int proxy_disconnect = 0;
 #endif /* HAVE_PTHREAD */
+int proxy_disconnect = 0;
 
 static int sockets_initialized = 0;
 
