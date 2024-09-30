@@ -137,7 +137,7 @@ static size_t callback_receive_banner(const void *data, size_t len, void *user)
             /* The server MAY send other lines of data... */
             cmp = strncmp(buffer, "SSH-", 4);
             if (cmp == 0) {
-                str = strdup(buffer);
+                str = libssh_strdup(buffer);
                 if (str == NULL) {
                     return SSH_ERROR;
                 }
@@ -192,13 +192,13 @@ int ssh_send_banner(ssh_session session, int server)
 
     if (server == 1) {
         if (session->server_opts.custombanner == NULL) {
-            session->serverbanner = strdup(banner);
+            session->serverbanner = libssh_strdup(banner);
             if (session->serverbanner == NULL) {
                 goto end;
             }
         } else {
             len = strlen(session->server_opts.custombanner);
-            session->serverbanner = malloc(len + 8 + 1);
+            session->serverbanner = libssh_malloc(len + 8 + 1);
             if(session->serverbanner == NULL) {
                 goto end;
             }
@@ -214,7 +214,7 @@ int ssh_send_banner(ssh_session session, int server)
                  session->serverbanner,
                  terminator);
     } else {
-        session->clientbanner = strdup(banner);
+        session->clientbanner = libssh_strdup(banner);
         if (session->clientbanner == NULL) {
             goto end;
         }
@@ -755,7 +755,7 @@ ssh_session_set_disconnect_message(ssh_session session, const char *message)
 
     if (message == NULL || strlen(message) == 0) {
         SAFE_FREE(session->disconnect_message);  //To free any message set earlier.
-        session->disconnect_message = strdup("Bye Bye") ;
+        session->disconnect_message = libssh_strdup("Bye Bye") ;
         if (session->disconnect_message == NULL) {
             ssh_set_error_oom(session);
             return SSH_ERROR;
@@ -763,7 +763,7 @@ ssh_session_set_disconnect_message(ssh_session session, const char *message)
         return SSH_OK;
     }
     SAFE_FREE(session->disconnect_message);  //To free any message set earlier.
-    session->disconnect_message = strdup(message);
+    session->disconnect_message = libssh_strdup(message);
     if (session->disconnect_message == NULL) {
         ssh_set_error_oom(session);
         return SSH_ERROR;
@@ -803,7 +803,7 @@ ssh_disconnect(ssh_session session)
 #endif /* _WIN32 */
 
     if (session->disconnect_message == NULL) {
-        session->disconnect_message = strdup("Bye Bye") ;
+        session->disconnect_message = libssh_strdup("Bye Bye") ;
         if (session->disconnect_message == NULL) {
             ssh_set_error_oom(session);
             goto error;

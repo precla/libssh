@@ -65,7 +65,7 @@
 
 static ssh_message ssh_message_new(ssh_session session)
 {
-    ssh_message msg = calloc(1, sizeof(struct ssh_message_struct));
+    ssh_message msg = libssh_calloc(1, sizeof(struct ssh_message_struct));
     if (msg == NULL) {
         return NULL;
     }
@@ -106,7 +106,7 @@ static int ssh_send_disconnect(ssh_session session)
     }
 
     if (session->disconnect_message == NULL) {
-        session->disconnect_message = strdup("Bye Bye");
+        session->disconnect_message = libssh_strdup("Bye Bye");
         if (session->disconnect_message == NULL) {
             ssh_set_error_oom(session);
             return SSH_ERROR;
@@ -895,7 +895,7 @@ SSH_PACKET_CALLBACK(ssh_packet_userauth_request){
         goto error;
     }
     msg->auth_request.signature_state = SSH_PUBLICKEY_STATE_NONE;
-    msg->auth_request.sigtype = strdup(ssh_string_get_char(algo));
+    msg->auth_request.sigtype = libssh_strdup(ssh_string_get_char(algo));
     if (msg->auth_request.sigtype == NULL) {
         msg->auth_request.signature_state = SSH_PUBLICKEY_STATE_ERROR;
         SSH_STRING_FREE(algo);
@@ -986,7 +986,7 @@ SSH_PACKET_CALLBACK(ssh_packet_userauth_request){
     	 goto error;
      }
      SSH_LOG(SSH_LOG_PACKET, "gssapi: %d OIDs", n_oid);
-     oids = calloc(n_oid, sizeof(ssh_string));
+     oids = libssh_calloc(n_oid, sizeof(ssh_string));
      if (oids == NULL){
     	 ssh_set_error_oom(session);
     	 goto error;
@@ -1136,7 +1136,7 @@ SSH_PACKET_CALLBACK(ssh_packet_userauth_info_response){
   }
   session->kbdint->nanswers = nanswers;
 
-  session->kbdint->answers = calloc(nanswers, sizeof(char *));
+  session->kbdint->answers = libssh_calloc(nanswers, sizeof(char *));
   if (session->kbdint->answers == NULL) {
     session->kbdint->nanswers = 0;
     ssh_set_error_oom(session);

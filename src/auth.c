@@ -925,7 +925,7 @@ int ssh_userauth_agent(ssh_session session,
     }
 
     if (!session->agent_state) {
-        session->agent_state = malloc(sizeof(struct ssh_agent_state_struct));
+        session->agent_state = libssh_malloc(sizeof(struct ssh_agent_state_struct));
         if (!session->agent_state) {
             ssh_set_error_oom(session);
             return SSH_AUTH_ERROR;
@@ -952,11 +952,11 @@ int ssh_userauth_agent(ssh_session session,
         size_t certsLen = ssh_list_count(session->opts.certificate);
         struct ssh_iterator *it = ssh_list_get_iterator(session->opts.identity);
 
-        configKeys = malloc(identityLen * sizeof(ssh_key));
-        configCerts = malloc((certsLen + identityLen) * sizeof(ssh_key));
+        configKeys = libssh_malloc(identityLen * sizeof(ssh_key));
+        configCerts = libssh_malloc((certsLen + identityLen) * sizeof(ssh_key));
         if (configKeys == NULL || configCerts == NULL) {
-            free(configKeys);
-            free(configCerts);
+            libssh_free(configKeys);
+            libssh_free(configCerts);
             ssh_set_error_oom(session);
             return SSH_AUTH_ERROR;
         }
@@ -985,7 +985,7 @@ int ssh_userauth_agent(ssh_session session,
                 * If we couldn't get the public key from the private key file,
                 * try a .pub file instead.
                 */
-                pubkeyFile = malloc(pubkeyPathLen);
+                pubkeyFile = libssh_malloc(pubkeyPathLen);
                 if (!pubkeyFile) {
                     ssh_set_error_oom(session);
                     rc = SSH_AUTH_ERROR;
@@ -993,7 +993,7 @@ int ssh_userauth_agent(ssh_session session,
                 }
                 snprintf(pubkeyFile, pubkeyPathLen, "%s.pub", privkeyFile);
                 rc = ssh_pki_import_pubkey_file(pubkeyFile, &pubkey);
-                free(pubkeyFile);
+                libssh_free(pubkeyFile);
                 if (rc == SSH_OK) {
                     configKeys[configKeysCount++] = pubkey;
                 } else if (pubkey) {
@@ -1004,7 +1004,7 @@ int ssh_userauth_agent(ssh_session session,
              * do not merge it yet with the key as we need to try first the
              * non-certified key */
             certPathLen = strlen(privkeyFile) + sizeof("-cert.pub");
-            certFile = malloc(certPathLen);
+            certFile = libssh_malloc(certPathLen);
             if (!certFile) {
                 ssh_set_error_oom(session);
                 rc = SSH_AUTH_ERROR;
@@ -1012,7 +1012,7 @@ int ssh_userauth_agent(ssh_session session,
             }
             snprintf(certFile, certPathLen, "%s-cert.pub", privkeyFile);
             rc = ssh_pki_import_cert_file(certFile, &cert);
-            free(certFile);
+            libssh_free(certFile);
             if (rc == SSH_OK) {
                 configCerts[configCertsCount++] = cert;
             } else if (cert) {
@@ -1162,11 +1162,11 @@ done:
     for (i = 0; i < configKeysCount; i++) {
         ssh_key_free(configKeys[i]);
     }
-    free(configKeys);
+    libssh_free(configKeys);
     for (i = 0; i < configCertsCount; i++) {
         ssh_key_free(configCerts[i]);
     }
-    free(configCerts);
+    libssh_free(configCerts);
     return rc;
 }
 
@@ -1229,7 +1229,7 @@ int ssh_userauth_publickey_auto_get_current_identity(ssh_session session,
         return SSH_ERROR;
     }
 
-    *value = strdup(id);
+    *value = libssh_strdup(id);
     if (*value == NULL) {
         ssh_set_error_oom(session);
         return SSH_ERROR;
@@ -1291,7 +1291,7 @@ int ssh_userauth_publickey_auto(ssh_session session,
     }
     if (!session->auth.auto_state) {
         session->auth.auto_state =
-                calloc(1, sizeof(struct ssh_auth_auto_state_struct));
+                libssh_calloc(1, sizeof(struct ssh_auth_auto_state_struct));
         if (!session->auth.auto_state) {
             ssh_set_error_oom(session);
             return SSH_AUTH_ERROR;
@@ -1719,7 +1719,7 @@ ssh_kbdint ssh_kbdint_new(void)
 {
     ssh_kbdint kbd;
 
-    kbd = calloc(1, sizeof(struct ssh_kbdint_struct));
+    kbd = libssh_calloc(1, sizeof(struct ssh_kbdint_struct));
     if (kbd == NULL) {
         return NULL;
     }
@@ -1979,7 +1979,7 @@ SSH_PACKET_CALLBACK(ssh_packet_userauth_info_request) {
 
     session->kbdint->nprompts = nprompts;
     session->kbdint->nanswers = nprompts;
-    session->kbdint->prompts = calloc(nprompts, sizeof(char *));
+    session->kbdint->prompts = libssh_calloc(nprompts, sizeof(char *));
     if (session->kbdint->prompts == NULL) {
         session->kbdint->nprompts = 0;
         ssh_set_error_oom(session);
@@ -1989,7 +1989,7 @@ SSH_PACKET_CALLBACK(ssh_packet_userauth_info_request) {
         return SSH_PACKET_USED;
     }
 
-    session->kbdint->echo = calloc(nprompts, sizeof(unsigned char));
+    session->kbdint->echo = libssh_calloc(nprompts, sizeof(unsigned char));
     if (session->kbdint->echo == NULL) {
         session->kbdint->nprompts = 0;
         ssh_set_error_oom(session);
@@ -2263,7 +2263,7 @@ ssh_userauth_kbdint_setanswer(ssh_session session, unsigned int i,
     }
 
     if (session->kbdint->answers == NULL) {
-        session->kbdint->answers = calloc(session->kbdint->nprompts, sizeof(char *));
+        session->kbdint->answers = libssh_calloc(session->kbdint->nprompts, sizeof(char *));
         if (session->kbdint->answers == NULL) {
             ssh_set_error_oom(session);
             return -1;
@@ -2276,7 +2276,7 @@ ssh_userauth_kbdint_setanswer(ssh_session session, unsigned int i,
         SAFE_FREE(session->kbdint->answers[i]);
     }
 
-    session->kbdint->answers[i] = strdup(answer);
+    session->kbdint->answers[i] = libssh_strdup(answer);
     if (session->kbdint->answers[i] == NULL) {
         ssh_set_error_oom(session);
         return -1;

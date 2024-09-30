@@ -41,7 +41,7 @@ sha1_init(void)
         return NULL;
     }
 
-    ctx = malloc(sizeof(mbedtls_md_context_t));
+    ctx = libssh_malloc(sizeof(mbedtls_md_context_t));
     if (ctx == NULL) {
         return NULL;
     }
@@ -120,7 +120,7 @@ sha256_init(void)
         return NULL;
     }
 
-    ctx = malloc(sizeof(mbedtls_md_context_t));
+    ctx = libssh_malloc(sizeof(mbedtls_md_context_t));
     if (ctx == NULL) {
         return NULL;
     }
@@ -199,7 +199,7 @@ sha384_init(void)
         return NULL;
     }
 
-    ctx = malloc(sizeof(mbedtls_md_context_t));
+    ctx = libssh_malloc(sizeof(mbedtls_md_context_t));
     if (ctx == NULL) {
         return NULL;
     }
@@ -277,7 +277,7 @@ sha512_init(void)
         return NULL;
     }
 
-    ctx = malloc(sizeof(mbedtls_md_context_t));
+    ctx = libssh_malloc(sizeof(mbedtls_md_context_t));
     if (ctx == NULL) {
         return NULL;
     }
@@ -355,7 +355,7 @@ md5_init(void)
         return NULL;
     }
 
-    ctx = malloc(sizeof(mbedtls_md_context_t));
+    ctx = libssh_malloc(sizeof(mbedtls_md_context_t));
     if (ctx == NULL) {
         return NULL;
     }

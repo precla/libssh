@@ -360,7 +360,7 @@ ssh_exec_shell(char *cmd)
 
         argv[0] = shell;
         argv[1] = (char *) "-c";
-        argv[2] = strdup(cmd);
+        argv[2] = libssh_strdup(cmd);
         argv[3] = NULL;
 
         rc = execv(argv[0], argv);
@@ -418,7 +418,7 @@ ssh_match_exec(ssh_session session, const char *command, bool negate)
     SSH_LOG(SSH_LOG_TRACE, "%s 'exec' command '%s'%s (rv=%d)",
             result == 1 ? "Matched" : "Not matched", cmd,
             negate == true ? " (negated)" : "", rv);
-    free(cmd);
+    libssh_free(cmd);
     return result;
 }
 #else
@@ -470,7 +470,7 @@ ssh_config_parse_proxy_jump(ssh_session session, const char *s, bool do_parsing)
     }
 
     /* This is comma-separated list of [user@]host[:port] entries */
-    c = strdup(s);
+    c = libssh_strdup(s);
     if (c == NULL) {
         ssh_set_error_oom(session);
         return SSH_ERROR;
@@ -484,7 +484,7 @@ ssh_config_parse_proxy_jump(ssh_session session, const char *s, bool do_parsing)
             *endp = '\0';
         }
         if (parse_entry && libssh_proxy_jump) {
-            jump_host = calloc(1, sizeof(struct ssh_jump_info_struct));
+            jump_host = libssh_calloc(1, sizeof(struct ssh_jump_info_struct));
             if (jump_host == NULL) {
                 ssh_set_error_oom(session);
                 rv = SSH_ERROR;
@@ -524,7 +524,7 @@ ssh_config_parse_proxy_jump(ssh_session session, const char *s, bool do_parsing)
             }
             /* The rest of the list needs to be passed on */
             if (endp != NULL) {
-                next = strdup(endp + 1);
+                next = libssh_strdup(endp + 1);
                 if (next == NULL) {
                     ssh_set_error_oom(session);
                     rv = SSH_ERROR;
@@ -597,21 +597,21 @@ ssh_config_make_absolute(ssh_session session,
 
     /* Looks like absolute path */
     if (path[0] == '/') {
-        return strdup(path);
+        return libssh_strdup(path);
     }
 
     /* relative path */
     if (global) {
         /* Parsing global config */
         outlen = strlen(path) + strlen("/etc/ssh/") + 1;
-        out = malloc(outlen);
+        out = libssh_malloc(outlen);
         if (out == NULL) {
             ssh_set_error_oom(session);
             return NULL;
         }
         rv = snprintf(out, outlen, "/etc/ssh/%s", path);
         if (rv < 1) {
-            free(out);
+            libssh_free(out);
             return NULL;
         }
         return out;
@@ -628,14 +628,14 @@ ssh_config_make_absolute(ssh_session session,
         return NULL;
     }
     outlen = strlen(path) + strlen(session->opts.sshdir) + 1 + 1;
-    out = malloc(outlen);
+    out = libssh_malloc(outlen);
     if (out == NULL) {
         ssh_set_error_oom(session);
         return NULL;
     }
     rv = snprintf(out, outlen, "%s/%s", session->opts.sshdir, path);
     if (rv < 1) {
-        free(out);
+        libssh_free(out);
         return NULL;
     }
     return out;
@@ -758,7 +758,7 @@ ssh_config_parse_line(ssh_session session,
     return 0;
   }
 
-  x = s = strdup(line);
+  x = s = libssh_strdup(line);
   if (s == NULL) {
     ssh_set_error_oom(session);
     return -1;
@@ -813,7 +813,7 @@ ssh_config_parse_line(ssh_session session,
 #else
         local_parse_file(session, path, parsing, depth + 1, global);
 #endif /* HAVE_GLOB */
-        free(path);
+        libssh_free(path);
       }
       break;
 
@@ -1051,10 +1051,10 @@ ssh_config_parse_line(ssh_session session,
       if (p && *parsing) {
         char *z = ssh_path_expand_escape(session, p);
         if (z == NULL) {
-            z = strdup(p);
+            z = libssh_strdup(p);
         }
         ssh_options_set(session, SSH_OPTIONS_HOST, z);
-        free(z);
+        libssh_free(z);
       }
       break;
     case SOC_PORT:

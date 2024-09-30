@@ -50,7 +50,7 @@ static int ssh_gets(const char *prompt, char *buf, size_t len, int verify)
     char *ptr = NULL;
     int ok = 0;
 
-    tmp = calloc(1, len);
+    tmp = libssh_calloc(1, len);
     if (tmp == NULL) {
         return 0;
     }
@@ -64,7 +64,7 @@ static int ssh_gets(const char *prompt, char *buf, size_t len, int verify)
         }
         fflush(stdout);
         if (fgets(tmp, len, stdin) == NULL) {
-            free(tmp);
+            libssh_free(tmp);
             return 0;
         }
 
@@ -80,7 +80,7 @@ static int ssh_gets(const char *prompt, char *buf, size_t len, int verify)
         if (verify) {
             char *key_string;
 
-            key_string = calloc(1, len);
+            key_string = libssh_calloc(1, len);
             if (key_string == NULL) {
                 break;
             }
@@ -110,7 +110,7 @@ static int ssh_gets(const char *prompt, char *buf, size_t len, int verify)
         ok = 1;
     }
     explicit_bzero(tmp, len);
-    free(tmp);
+    libssh_free(tmp);
 
     return ok;
 }

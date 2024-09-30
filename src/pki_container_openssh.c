@@ -263,7 +263,7 @@ ssh_pki_openssh_import(const char *text_key,
         SSH_LOG(SSH_LOG_TRACE, "Not an OpenSSH private key (no footer)");
         goto out;
     }
-    base64 = malloc(end - ptr + 1);
+    base64 = libssh_malloc(end - ptr + 1);
     if (base64 == NULL) {
         goto out;
     }

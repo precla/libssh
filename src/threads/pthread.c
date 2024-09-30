@@ -35,7 +35,7 @@ static int ssh_pthread_mutex_init (void **mutex)
         return EINVAL;
     }
 
-    *mutex = malloc(sizeof(pthread_mutex_t));
+    *mutex = libssh_malloc(sizeof(pthread_mutex_t));
     if (*mutex == NULL) {
         return ENOMEM;
     }

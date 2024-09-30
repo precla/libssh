@@ -178,7 +178,7 @@ int server_set_kex(ssh_session session)
             return -1;
         }
 
-        server->methods[i] = strdup(wanted);
+        server->methods[i] = libssh_strdup(wanted);
         if (server->methods[i] == NULL) {
             for (j = 0; j < i; j++) {
                 SAFE_FREE(server->methods[j]);
@@ -493,7 +493,7 @@ static size_t callback_receive_banner(const void *data, size_t len, void *user)
         if (buffer[i] == '\n') {
             buffer[i] = '\0';
 
-            str = strdup(buffer);
+            str = libssh_strdup(buffer);
             /* number of bytes read */
             processed = i + 1;
             session->clientbanner = str;
@@ -978,14 +978,14 @@ int ssh_message_auth_interactive_request(ssh_message msg, const char *name,
     ssh_kbdint_clean(msg->session->kbdint);
   }
 
-  msg->session->kbdint->name = strdup(name);
+  msg->session->kbdint->name = libssh_strdup(name);
   if(msg->session->kbdint->name == NULL) {
       ssh_set_error_oom(msg->session);
       ssh_kbdint_free(msg->session->kbdint);
       msg->session->kbdint = NULL;
       return SSH_PACKET_USED;
   }
-  msg->session->kbdint->instruction = strdup(instruction);
+  msg->session->kbdint->instruction = libssh_strdup(instruction);
   if(msg->session->kbdint->instruction == NULL) {
       ssh_set_error_oom(msg->session);
       ssh_kbdint_free(msg->session->kbdint);
@@ -995,7 +995,7 @@ int ssh_message_auth_interactive_request(ssh_message msg, const char *name,
 
   msg->session->kbdint->nprompts = num_prompts;
   if(num_prompts > 0) {
-    msg->session->kbdint->prompts = calloc(num_prompts, sizeof(char *));
+    msg->session->kbdint->prompts = libssh_calloc(num_prompts, sizeof(char *));
     if (msg->session->kbdint->prompts == NULL) {
       msg->session->kbdint->nprompts = 0;
       ssh_set_error_oom(msg->session);
@@ -1003,7 +1003,7 @@ int ssh_message_auth_interactive_request(ssh_message msg, const char *name,
       msg->session->kbdint = NULL;
       return SSH_ERROR;
     }
-    msg->session->kbdint->echo = calloc(num_prompts, sizeof(unsigned char));
+    msg->session->kbdint->echo = libssh_calloc(num_prompts, sizeof(unsigned char));
     if (msg->session->kbdint->echo == NULL) {
       ssh_set_error_oom(msg->session);
       ssh_kbdint_free(msg->session->kbdint);
@@ -1012,7 +1012,7 @@ int ssh_message_auth_interactive_request(ssh_message msg, const char *name,
     }
     for (i = 0; i < num_prompts; i++) {
       msg->session->kbdint->echo[i] = echo[i];
-      msg->session->kbdint->prompts[i] = strdup(prompts[i]);
+      msg->session->kbdint->prompts[i] = libssh_strdup(prompts[i]);
       if (msg->session->kbdint->prompts[i] == NULL) {
         ssh_set_error_oom(msg->session);
         msg->session->kbdint->nprompts = i;

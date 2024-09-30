@@ -130,7 +130,7 @@ static uint32_t atomicio(struct ssh_agent_struct *agent, void *buf, uint32_t n, 
 ssh_agent ssh_agent_new(struct ssh_session_struct *session) {
   ssh_agent agent = NULL;
 
-  agent = malloc(sizeof(struct ssh_agent_struct));
+  agent = libssh_malloc(sizeof(struct ssh_agent_struct));
   if (agent == NULL) {
     return NULL;
   }

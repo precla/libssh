@@ -122,14 +122,14 @@ bcrypt_pbkdf(const char *pass, size_t passlen, const uint8_t *salt, size_t saltl
 	if (passlen == 0 || saltlen == 0 || keylen == 0 ||
 	    keylen > sizeof(out) * sizeof(out) || saltlen > 1<<20)
 		return -1;
-	if ((countsalt = calloc(1, saltlen + 4)) == NULL)
+	if ((countsalt = libssh_calloc(1, saltlen + 4)) == NULL)
 		return -1;
 	stride = (keylen + sizeof(out) - 1) / sizeof(out);
 	amt = (keylen + stride - 1) / stride;
 
 	memcpy(countsalt, salt, saltlen);
 
-	state = malloc(sizeof(*state));
+	state = libssh_malloc(sizeof(*state));
 	if (state == NULL) {
 		free(countsalt);
 		return -1;

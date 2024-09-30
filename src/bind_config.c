@@ -311,7 +311,7 @@ ssh_bind_config_parse_line(ssh_bind bind,
         return -1;
     }
 
-    x = s = strdup(line);
+    x = s = libssh_strdup(line);
     if (s == NULL) {
         ssh_set_error_oom(bind);
         return -1;

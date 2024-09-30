@@ -2005,7 +2005,7 @@ ssh_packet_set_newkeys(ssh_session session,
         }
 
         session_id_len = session->current_crypto->session_id_len;
-        session->next_crypto->session_id = malloc(session_id_len);
+        session->next_crypto->session_id = libssh_malloc(session_id_len);
         if (session->next_crypto->session_id == NULL) {
             ssh_set_error_oom(session);
             return SSH_ERROR;

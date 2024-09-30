@@ -41,17 +41,17 @@ int pki_privkey_build_ed25519(ssh_key key,
 #ifdef HAVE_LIBCRYPTO
     /* In OpenSSL implementation, the private key is the original private seed,
      * without the public key. */
-    key->ed25519_privkey = malloc(ED25519_KEY_LEN);
+    key->ed25519_privkey = libssh_malloc(ED25519_KEY_LEN);
 #else
     /* In the internal implementation, the private key is the concatenation of
      * the private seed with the public key. */
-    key->ed25519_privkey = malloc(2 * ED25519_KEY_LEN);
+    key->ed25519_privkey = libssh_malloc(2 * ED25519_KEY_LEN);
 #endif
     if (key->ed25519_privkey == NULL) {
         goto error;
     }
 
-    key->ed25519_pubkey = malloc(ED25519_KEY_LEN);
+    key->ed25519_pubkey = libssh_malloc(ED25519_KEY_LEN);
     if (key->ed25519_pubkey == NULL) {
         goto error;
     }
@@ -151,11 +151,11 @@ int pki_ed25519_key_dup(ssh_key new_key, const ssh_key key)
 #ifdef HAVE_LIBCRYPTO
         /* In OpenSSL implementation, the private key is the original private
          * seed, without the public key. */
-        new_key->ed25519_privkey = malloc(ED25519_KEY_LEN);
+        new_key->ed25519_privkey = libssh_malloc(ED25519_KEY_LEN);
 #else
         /* In the internal implementation, the private key is the concatenation
          * of the private seed with the public key. */
-        new_key->ed25519_privkey = malloc(2 * ED25519_KEY_LEN);
+        new_key->ed25519_privkey = libssh_malloc(2 * ED25519_KEY_LEN);
 #endif
         if (new_key->ed25519_privkey == NULL) {
             return SSH_ERROR;
@@ -168,7 +168,7 @@ int pki_ed25519_key_dup(ssh_key new_key, const ssh_key key)
     }
 
     if (key->ed25519_pubkey != NULL) {
-        new_key->ed25519_pubkey = malloc(ED25519_KEY_LEN);
+        new_key->ed25519_pubkey = libssh_malloc(ED25519_KEY_LEN);
         if (new_key->ed25519_pubkey == NULL) {
             SAFE_FREE(new_key->ed25519_privkey);
             return SSH_ERROR;
@@ -305,7 +305,7 @@ int pki_signature_from_ed25519_blob(ssh_signature sig, ssh_string sig_blob)
 #ifdef HAVE_LIBCRYPTO
     sig->raw_sig = ssh_string_copy(sig_blob);
 #else
-    sig->ed25519_sig = malloc(ED25519_SIG_LEN);
+    sig->ed25519_sig = libssh_malloc(ED25519_SIG_LEN);
     if (sig->ed25519_sig == NULL){
         return SSH_ERROR;
     }

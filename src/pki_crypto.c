@@ -1084,7 +1084,7 @@ ssh_key pki_private_key_from_base64(const char *b64_key,
             goto fail;
         }
 
-        ed25519 = malloc(key_len);
+        ed25519 = libssh_malloc(key_len);
         if (ed25519 == NULL) {
             SSH_LOG(SSH_LOG_TRACE, "Out of memory");
             goto fail;
@@ -1100,7 +1100,7 @@ ssh_key pki_private_key_from_base64(const char *b64_key,
         }
 
         /* length matches the private key length */
-        ed25519_pubkey = malloc(ED25519_KEY_LEN);
+        ed25519_pubkey = libssh_malloc(ED25519_KEY_LEN);
         if (ed25519_pubkey == NULL) {
             SSH_LOG(SSH_LOG_TRACE, "Out of memory");
             goto fail;
@@ -2150,7 +2150,7 @@ static int pki_signature_from_ecdsa_blob(UNUSED_PARAM(const ssh_key pubkey),
     }
     raw_sig_len = rc;
 
-    raw_sig_data = (unsigned char *)calloc(1, raw_sig_len);
+    raw_sig_data = (unsigned char *)libssh_calloc(1, raw_sig_len);
     if (raw_sig_data == NULL) {
         goto error;
     }
@@ -2418,7 +2418,7 @@ ssh_signature pki_sign_data(const ssh_key privkey,
 
     /* Allocate buffer for signature */
     raw_sig_len = (size_t)EVP_PKEY_size(pkey);
-    raw_sig_data = (unsigned char *)malloc(raw_sig_len);
+    raw_sig_data = (unsigned char *)libssh_malloc(raw_sig_len);
     if (raw_sig_data == NULL) {
         SSH_LOG(SSH_LOG_TRACE, "Out of memory");
         goto out;
@@ -2664,14 +2664,14 @@ int pki_key_generate_ed25519(ssh_key key)
         goto error;
     }
 
-    key->ed25519_privkey = malloc(ED25519_KEY_LEN);
+    key->ed25519_privkey = libssh_malloc(ED25519_KEY_LEN);
     if (key->ed25519_privkey == NULL) {
         SSH_LOG(SSH_LOG_TRACE,
                 "Failed to allocate memory for ed25519 private key");
         goto error;
     }
 
-    key->ed25519_pubkey = malloc(ED25519_KEY_LEN);
+    key->ed25519_pubkey = libssh_malloc(ED25519_KEY_LEN);
     if (key->ed25519_pubkey == NULL) {
         SSH_LOG(SSH_LOG_TRACE,
                 "Failed to allocate memory for ed25519 public key");

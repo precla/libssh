@@ -63,7 +63,7 @@ ssh_session ssh_new(void)
     char *id = NULL;
     int rc;
 
-    session = calloc(1, sizeof (struct ssh_session_struct));
+    session = libssh_calloc(1, sizeof (struct ssh_session_struct));
     if (session == NULL) {
         return NULL;
     }
@@ -150,7 +150,7 @@ ssh_session ssh_new(void)
         goto err;
     }
 
-    id = strdup("%d/id_ed25519");
+    id = libssh_strdup("%d/id_ed25519");
     if (id == NULL) {
         goto err;
     }
@@ -161,7 +161,7 @@ ssh_session ssh_new(void)
     }
 
 #ifdef HAVE_ECC
-    id = strdup("%d/id_ecdsa");
+    id = libssh_strdup("%d/id_ecdsa");
     if (id == NULL) {
         goto err;
     }
@@ -171,7 +171,7 @@ ssh_session ssh_new(void)
     }
 #endif
 
-    id = strdup("%d/id_rsa");
+    id = libssh_strdup("%d/id_rsa");
     if (id == NULL) {
         goto err;
     }
@@ -193,7 +193,7 @@ ssh_session ssh_new(void)
     return session;
 
 err:
-    free(id);
+    libssh_free(id);
     ssh_free(session);
     return NULL;
 }
@@ -1101,7 +1101,7 @@ int ssh_get_pubkey_hash(ssh_session session, unsigned char **hash)
         return SSH_ERROR;
     }
 
-    h = calloc(MD5_DIGEST_LEN, sizeof(unsigned char));
+    h = libssh_calloc(MD5_DIGEST_LEN, sizeof(unsigned char));
     if (h == NULL) {
         SSH_STRING_FREE(pubkey_blob);
         return SSH_ERROR;
@@ -1236,7 +1236,7 @@ int ssh_get_publickey_hash(const ssh_key key,
         {
             SHACTX ctx;
 
-            h = calloc(1, SHA_DIGEST_LEN);
+            h = libssh_calloc(1, SHA_DIGEST_LEN);
             if (h == NULL) {
                 rc = -1;
                 goto out;
@@ -1244,20 +1244,20 @@ int ssh_get_publickey_hash(const ssh_key key,
 
             ctx = sha1_init();
             if (ctx == NULL) {
-                free(h);
+                libssh_free(h);
                 rc = -1;
                 goto out;
             }
 
             rc = sha1_update(ctx, ssh_string_data(blob), ssh_string_len(blob));
             if (rc != SSH_OK) {
-                free(h);
+                libssh_free(h);
                 sha1_ctx_free(ctx);
                 goto out;
             }
             rc = sha1_final(h, ctx);
             if (rc != SSH_OK) {
-                free(h);
+                libssh_free(h);
                 goto out;
             }
 
@@ -1268,7 +1268,7 @@ int ssh_get_publickey_hash(const ssh_key key,
         {
             SHA256CTX ctx;
 
-            h = calloc(1, SHA256_DIGEST_LEN);
+            h = libssh_calloc(1, SHA256_DIGEST_LEN);
             if (h == NULL) {
                 rc = -1;
                 goto out;
@@ -1276,20 +1276,20 @@ int ssh_get_publickey_hash(const ssh_key key,
 
             ctx = sha256_init();
             if (ctx == NULL) {
-                free(h);
+                libssh_free(h);
                 rc = -1;
                 goto out;
             }
 
             rc = sha256_update(ctx, ssh_string_data(blob), ssh_string_len(blob));
             if (rc != SSH_OK) {
-                free(h);
+                libssh_free(h);
                 sha256_ctx_free(ctx);
                 goto out;
             }
             rc = sha256_final(h, ctx);
             if (rc != SSH_OK) {
-                free(h);
+                libssh_free(h);
                 goto out;
             }
 
@@ -1308,7 +1308,7 @@ int ssh_get_publickey_hash(const ssh_key key,
                 goto out;
             }
 
-            h = calloc(1, MD5_DIGEST_LEN);
+            h = libssh_calloc(1, MD5_DIGEST_LEN);
             if (h == NULL) {
                 rc = -1;
                 goto out;
@@ -1316,20 +1316,20 @@ int ssh_get_publickey_hash(const ssh_key key,
 
             ctx = md5_init();
             if (ctx == NULL) {
-                free(h);
+                libssh_free(h);
                 rc = -1;
                 goto out;
             }
 
             rc = md5_update(ctx, ssh_string_data(blob), ssh_string_len(blob));
             if (rc != SSH_OK) {
-                free(h);
+                libssh_free(h);
                 md5_ctx_free(ctx);
                 goto out;
             }
             rc = md5_final(h, ctx);
             if (rc != SSH_OK) {
-                free(h);
+                libssh_free(h);
                 goto out;
             }
 

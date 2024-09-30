@@ -135,7 +135,7 @@ static socket_t bind_socket(ssh_bind sshbind, const char *hostname,
 ssh_bind ssh_bind_new(void) {
     ssh_bind ptr;
 
-    ptr = calloc(1, sizeof(struct ssh_bind_struct));
+    ptr = libssh_calloc(1, sizeof(struct ssh_bind_struct));
     if (ptr == NULL) {
         return NULL;
     }
@@ -234,9 +234,9 @@ int ssh_bind_listen(ssh_bind sshbind) {
         sshbind->rsakey == NULL &&
         sshbind->ed25519key == NULL) {
 
-        sshbind->ecdsakey = strdup("/etc/ssh/ssh_host_ecdsa_key");
-        sshbind->rsakey = strdup("/etc/ssh/ssh_host_rsa_key");
-        sshbind->ed25519key = strdup("/etc/ssh/ssh_host_ed25519_key");
+        sshbind->ecdsakey = libssh_strdup("/etc/ssh/ssh_host_ecdsa_key");
+        sshbind->rsakey = libssh_strdup("/etc/ssh/ssh_host_rsa_key");
+        sshbind->ed25519key = libssh_strdup("/etc/ssh/ssh_host_ed25519_key");
     }
 
     /* Apply global bind configurations, if it hasn't been applied before */
@@ -251,9 +251,9 @@ int ssh_bind_listen(ssh_bind sshbind) {
         sshbind->rsakey == NULL &&
         sshbind->ed25519key == NULL) {
 
-        sshbind->ecdsakey = strdup("/etc/ssh/ssh_host_ecdsa_key");
-        sshbind->rsakey = strdup("/etc/ssh/ssh_host_rsa_key");
-        sshbind->ed25519key = strdup("/etc/ssh/ssh_host_ed25519_key");
+        sshbind->ecdsakey = libssh_strdup("/etc/ssh/ssh_host_ecdsa_key");
+        sshbind->rsakey = libssh_strdup("/etc/ssh/ssh_host_rsa_key");
+        sshbind->ed25519key = libssh_strdup("/etc/ssh/ssh_host_ed25519_key");
     }
 
     if (sshbind->rsa == NULL &&
@@ -437,7 +437,7 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd)
     /* Copy options from bind to session */
     for (i = 0; i < SSH_KEX_METHODS; i++) {
       if (sshbind->wanted_methods[i]) {
-        session->opts.wanted_methods[i] = strdup(sshbind->wanted_methods[i]);
+        session->opts.wanted_methods[i] = libssh_strdup(sshbind->wanted_methods[i]);
         if (session->opts.wanted_methods[i] == NULL) {
           return SSH_ERROR;
         }
@@ -448,7 +448,7 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd)
       session->opts.bindaddr = NULL;
     else {
       SAFE_FREE(session->opts.bindaddr);
-      session->opts.bindaddr = strdup(sshbind->bindaddr);
+      session->opts.bindaddr = libssh_strdup(sshbind->bindaddr);
       if (session->opts.bindaddr == NULL) {
         return SSH_ERROR;
       }
@@ -456,7 +456,7 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd)
 
     if (sshbind->pubkey_accepted_key_types != NULL) {
         if (session->opts.pubkey_accepted_types == NULL) {
-            session->opts.pubkey_accepted_types = strdup(sshbind->pubkey_accepted_key_types);
+            session->opts.pubkey_accepted_types = libssh_strdup(sshbind->pubkey_accepted_key_types);
             if (session->opts.pubkey_accepted_types == NULL) {
                 ssh_set_error_oom(sshbind);
                 return SSH_ERROR;
@@ -480,7 +480,7 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd)
     session->common.log_verbosity = sshbind->common.log_verbosity;
 
     if (sshbind->banner != NULL) {
-        session->server_opts.custombanner = strdup(sshbind->banner);
+        session->server_opts.custombanner = libssh_strdup(sshbind->banner);
         if (session->server_opts.custombanner == NULL) {
             ssh_set_error_oom(sshbind);
             return SSH_ERROR;
@@ -488,7 +488,7 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd)
     }
 
     if (sshbind->moduli_file != NULL) {
-        session->server_opts.moduli_file = strdup(sshbind->moduli_file);
+        session->server_opts.moduli_file = libssh_strdup(sshbind->moduli_file);
         if (session->server_opts.moduli_file == NULL) {
             ssh_set_error_oom(sshbind);
             return SSH_ERROR;

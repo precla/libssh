@@ -350,7 +350,7 @@ int ssh_connector_remove_event(ssh_connector connector);
 #endif
 
 /** Free memory space */
-#define SAFE_FREE(x) do { if ((x) != NULL) {free(x); x=NULL;} } while(0)
+#define SAFE_FREE(x) do { if ((x) != NULL) {libssh_free(x); x=NULL;} } while(0)
 
 /** Zero a structure */
 #define ZERO_STRUCT(x) memset((char *)&(x), 0, sizeof(x))

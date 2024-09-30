@@ -111,7 +111,7 @@ ssh_key pki_private_key_from_base64(const char *b64_key, const char *passphrase,
     mbedtls_ctr_drbg_context *ctr_drbg = ssh_get_mbedtls_ctr_drbg_context();
 #endif
 
-    pk = malloc(sizeof(mbedtls_pk_context));
+    pk = libssh_malloc(sizeof(mbedtls_pk_context));
     if (pk == NULL) {
         goto fail;
     }
@@ -192,7 +192,7 @@ ssh_key pki_private_key_from_base64(const char *b64_key, const char *passphrase,
         /* type will be set later */
         mbedtls_ecp_keypair *keypair = mbedtls_pk_ec(*pk);
 
-        key->ecdsa = malloc(sizeof(mbedtls_ecdsa_context));
+        key->ecdsa = libssh_malloc(sizeof(mbedtls_ecdsa_context));
         if (key->ecdsa == NULL) {
             goto fail;
         }
@@ -244,7 +244,7 @@ int pki_privkey_build_rsa(ssh_key key,
     const mbedtls_pk_info_t *pk_info = NULL;
     int rc;
 
-    key->pk = malloc(sizeof(mbedtls_pk_context));
+    key->pk = libssh_malloc(sizeof(mbedtls_pk_context));
     if (key->pk == NULL) {
         return SSH_ERROR;
     }
@@ -300,7 +300,7 @@ int pki_pubkey_build_rsa(ssh_key key, ssh_string e, ssh_string n)
 #endif
     int rc;
 
-    key->pk = malloc(sizeof(mbedtls_pk_context));
+    key->pk = libssh_malloc(sizeof(mbedtls_pk_context));
     if (key->pk == NULL) {
         return SSH_ERROR;
     }
@@ -405,7 +405,7 @@ ssh_key pki_key_dup(const ssh_key key, int demote)
         case SSH_KEYTYPE_RSA: {
             mbedtls_rsa_context *rsa, *new_rsa;
 
-            new->pk = malloc(sizeof(mbedtls_pk_context));
+            new->pk = libssh_malloc(sizeof(mbedtls_pk_context));
             if (new->pk == NULL) {
                 goto fail;
             }
@@ -514,7 +514,7 @@ ssh_key pki_key_dup(const ssh_key key, int demote)
         case SSH_KEYTYPE_ECDSA_P521:
             new->ecdsa_nid = key->ecdsa_nid;
 
-            new->ecdsa = malloc(sizeof(mbedtls_ecdsa_context));
+            new->ecdsa = libssh_malloc(sizeof(mbedtls_ecdsa_context));
 
             if (new->ecdsa == NULL) {
                 goto fail;
@@ -569,7 +569,7 @@ int pki_key_generate_rsa(ssh_key key, int parameter)
     int rc;
     const mbedtls_pk_info_t *info = NULL;
 
-    key->pk = malloc(sizeof(mbedtls_pk_context));
+    key->pk = libssh_malloc(sizeof(mbedtls_pk_context));
     if (key->pk == NULL) {
         return SSH_ERROR;
     }
@@ -1463,7 +1463,7 @@ static ssh_string rsa_do_sign_hash(const unsigned char *digest,
     }
 
     sig_size = mbedtls_pk_get_bitlen(privkey) / 8;
-    sig = malloc(sig_size);
+    sig = libssh_malloc(sig_size);
     if (sig == NULL) {
         return NULL;
     }
@@ -1834,7 +1834,7 @@ int pki_privkey_build_ecdsa(ssh_key key, int nid, ssh_string e, ssh_string exp)
     key->ecdsa_nid = nid;
     key->type_c = pki_key_ecdsa_nid_to_name(nid);
 
-    key->ecdsa = malloc(sizeof(mbedtls_ecdsa_context));
+    key->ecdsa = libssh_malloc(sizeof(mbedtls_ecdsa_context));
     if (key->ecdsa == NULL) {
         return SSH_ERROR;
     }
@@ -1902,7 +1902,7 @@ int pki_pubkey_build_ecdsa(ssh_key key, int nid, ssh_string e)
     key->ecdsa_nid = nid;
     key->type_c = pki_key_ecdsa_nid_to_name(nid);
 
-    key->ecdsa = malloc(sizeof(mbedtls_ecdsa_context));
+    key->ecdsa = libssh_malloc(sizeof(mbedtls_ecdsa_context));
     if (key->ecdsa == NULL) {
         return SSH_ERROR;
     }
@@ -1974,7 +1974,7 @@ int pki_key_generate_ecdsa(ssh_key key, int parameter)
             break;
     }
 
-    key->ecdsa = malloc(sizeof(mbedtls_ecdsa_context));
+    key->ecdsa = libssh_malloc(sizeof(mbedtls_ecdsa_context));
     if (key->ecdsa == NULL) {
         return SSH_ERROR;
     }

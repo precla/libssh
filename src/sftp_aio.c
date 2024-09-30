@@ -41,7 +41,7 @@ struct sftp_aio_struct {
 static sftp_aio sftp_aio_new(void)
 {
     sftp_aio aio = NULL;
-    aio = calloc(1, sizeof(struct sftp_aio_struct));
+    aio = libssh_calloc(1, sizeof(struct sftp_aio_struct));
     return aio;
 }
 

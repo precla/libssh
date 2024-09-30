@@ -327,7 +327,7 @@ static int privatekey_decrypt(int algo, int mode, unsigned int key_len,
   if (gcry_cipher_open(&cipher, algo, mode, 0)
       || gcry_cipher_setkey(cipher, key, key_len)
       || gcry_cipher_setiv(cipher, iv, iv_len)
-      || (tmp = calloc(ssh_buffer_get_len(data), sizeof(unsigned char))) == NULL
+      || (tmp = libssh_calloc(ssh_buffer_get_len(data), sizeof(unsigned char))) == NULL
       || gcry_cipher_decrypt(cipher, tmp, ssh_buffer_get_len(data),
                        ssh_buffer_get(data), ssh_buffer_get_len(data))) {
     gcry_cipher_close(cipher);
@@ -390,7 +390,7 @@ static int privatekey_dek_header(const char *header, unsigned int header_len,
     return -1;
   }
 
-  *iv = malloc(*iv_len);
+  *iv = libssh_malloc(*iv_len);
   if (*iv == NULL) {
     return -1;
   }

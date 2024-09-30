@@ -219,7 +219,7 @@ void sftp_packet_free(sftp_packet packet)
     }
 
     SSH_BUFFER_FREE(packet->payload);
-    free(packet);
+    libssh_free(packet);
 }
 
 int buffer_add_attributes(ssh_buffer buffer, sftp_attributes attr)
@@ -286,7 +286,7 @@ static sftp_attributes sftp_parse_attr_4(sftp_session sftp,
     /* unused member variable */
     (void) expectnames;
 
-    attr = calloc(1, sizeof(struct sftp_attributes_struct));
+    attr = libssh_calloc(1, sizeof(struct sftp_attributes_struct));
     if (attr == NULL) {
         ssh_set_error_oom(sftp->session);
         sftp_set_error(sftp, SSH_FX_FAILURE);
@@ -485,7 +485,7 @@ static char * sftp_parse_longname(const char *longname,
 
     len = q - p;
 
-    return strndup(p, len);
+    return libssh_strndup(p, len);
 }
 
 /* sftp version 0-3 code. It is different from the v4 */
@@ -510,7 +510,7 @@ static sftp_attributes sftp_parse_attr_3(sftp_session sftp,
     sftp_attributes attr;
     int rc;
 
-    attr = calloc(1, sizeof(struct sftp_attributes_struct));
+    attr = libssh_calloc(1, sizeof(struct sftp_attributes_struct));
     if (attr == NULL) {
         ssh_set_error_oom(sftp->session);
         sftp_set_error(sftp, SSH_FX_FAILURE);
@@ -693,7 +693,7 @@ static sftp_request_queue request_queue_new(sftp_message msg)
 {
     sftp_request_queue queue = NULL;
 
-    queue = calloc(1, sizeof(struct sftp_request_queue_struct));
+    queue = libssh_calloc(1, sizeof(struct sftp_request_queue_struct));
     if (queue == NULL) {
         ssh_set_error_oom(msg->sftp->session);
         sftp_set_error(msg->sftp, SSH_FX_FAILURE);
@@ -804,7 +804,7 @@ static sftp_message sftp_get_message(sftp_packet packet)
         return NULL;
     }
 
-    msg = calloc(1, sizeof(struct sftp_message_struct));
+    msg = libssh_calloc(1, sizeof(struct sftp_message_struct));
     if (msg == NULL) {
         ssh_set_error_oom(sftp->session);
         sftp_set_error(packet->sftp, SSH_FX_FAILURE);
@@ -871,7 +871,7 @@ sftp_status_message parse_status_msg(sftp_message msg)
         return NULL;
     }
 
-    status = calloc(1, sizeof(struct sftp_status_message_struct));
+    status = libssh_calloc(1, sizeof(struct sftp_status_message_struct));
     if (status == NULL) {
         ssh_set_error_oom(msg->sftp->session);
         sftp_set_error(msg->sftp, SSH_FX_FAILURE);
@@ -903,10 +903,10 @@ sftp_status_message parse_status_msg(sftp_message msg)
     }
 
     if (status->errormsg == NULL)
-        status->errormsg = strdup("No error message in packet");
+        status->errormsg = libssh_strdup("No error message in packet");
 
     if (status->langmsg == NULL)
-        status->langmsg = strdup("");
+        status->langmsg = libssh_strdup("");
 
     if (status->errormsg == NULL || status->langmsg == NULL) {
         ssh_set_error_oom(msg->sftp->session);

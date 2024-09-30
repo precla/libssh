@@ -58,7 +58,7 @@ static const uint8_t zero_block[CHACHA20_BLOCKSIZE] = {0};
 static int libgcrypt_initialized = 0;
 
 static int alloc_key(struct ssh_cipher_struct *cipher) {
-    cipher->key = malloc(cipher->keylen);
+    cipher->key = libssh_malloc(cipher->keylen);
     if (cipher->key == NULL) {
       return -1;
     }
@@ -455,7 +455,7 @@ static int chacha20_set_encrypt_key(struct ssh_cipher_struct *cipher,
     gpg_error_t err;
 
     if (cipher->chacha20_schedule == NULL) {
-        ctx = calloc(1, sizeof(*ctx));
+        ctx = libssh_calloc(1, sizeof(*ctx));
         if (ctx == NULL) {
             return -1;
         }

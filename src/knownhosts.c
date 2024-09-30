@@ -97,7 +97,7 @@ static int match_hashed_hostname(const char *host, const char *hashed_host)
         return 0;
     }
 
-    hashed = strdup(hashed_host + 3);
+    hashed = libssh_strdup(hashed_host + 3);
     if (hashed == NULL) {
         return 0;
     }
@@ -138,7 +138,7 @@ static int match_hashed_hostname(const char *host, const char *hashed_host)
     }
 
 error:
-    free(hashed);
+    libssh_free(hashed);
     SSH_BUFFER_FREE(salt);
     SSH_BUFFER_FREE(hash);
 
@@ -644,7 +644,7 @@ int ssh_known_hosts_parse_line(const char *hostname,
     int match = 0;
     int rc = SSH_OK;
 
-    known_host = strdup(line);
+    known_host = libssh_strdup(line);
     if (known_host == NULL) {
         return SSH_ERROR;
     }
@@ -652,13 +652,13 @@ int ssh_known_hosts_parse_line(const char *hostname,
     /* match pattern for hostname or hashed hostname */
     p = strtok_r(known_host, " ", &save_tok);
     if (p == NULL ) {
-        free(known_host);
+        libssh_free(known_host);
         return SSH_ERROR;
     }
 
-    e = calloc(1, sizeof(struct ssh_knownhosts_entry));
+    e = libssh_calloc(1, sizeof(struct ssh_knownhosts_entry));
     if (e == NULL) {
-        free(known_host);
+        libssh_free(known_host);
         return SSH_ERROR;
     }
 
@@ -701,14 +701,14 @@ int ssh_known_hosts_parse_line(const char *hostname,
                 break;
             }
         }
-        free(host_port);
+        libssh_free(host_port);
 
         if (match == 0) {
             rc = SSH_AGAIN;
             goto out;
         }
 
-        e->hostname = strdup(hostname);
+        e->hostname = libssh_strdup(hostname);
         if (e->hostname == NULL) {
             rc = SSH_ERROR;
             goto out;
@@ -717,7 +717,7 @@ int ssh_known_hosts_parse_line(const char *hostname,
 
     /* Restart parsing */
     SAFE_FREE(known_host);
-    known_host = strdup(line);
+    known_host = libssh_strdup(line);
     if (known_host == NULL) {
         rc = SSH_ERROR;
         goto out;
@@ -731,7 +731,7 @@ int ssh_known_hosts_parse_line(const char *hostname,
         goto out;
     }
 
-    e->unparsed = strdup(p);
+    e->unparsed = libssh_strdup(p);
     if (e->unparsed == NULL) {
         rc = SSH_ERROR;
         goto out;
@@ -774,7 +774,7 @@ int ssh_known_hosts_parse_line(const char *hostname,
     if (p != NULL) {
         p = strstr(line, p);
         if (p != NULL) {
-            e->comment = strdup(p);
+            e->comment = libssh_strdup(p);
             if (e->comment == NULL) {
                 rc = SSH_ERROR;
                 goto out;
@@ -971,7 +971,7 @@ int ssh_session_export_known_hosts_entry(ssh_session session,
     SAFE_FREE(host);
     SAFE_FREE(b64_key);
 
-    *pentry_string = strdup(entry_buf);
+    *pentry_string = libssh_strdup(entry_buf);
     if (*pentry_string == NULL) {
         return SSH_ERROR;
     }

@@ -70,7 +70,7 @@ ssh_scp ssh_scp_new(ssh_session session, int mode, const char *location)
         goto error;
     }
 
-    scp = (ssh_scp)calloc(1, sizeof(struct ssh_scp_struct));
+    scp = (ssh_scp)libssh_calloc(1, sizeof(struct ssh_scp_struct));
     if (scp == NULL) {
         ssh_set_error(session, SSH_FATAL,
                       "Error allocating memory for ssh_scp");
@@ -91,7 +91,7 @@ ssh_scp ssh_scp_new(ssh_session session, int mode, const char *location)
         goto error;
     }
 
-    scp->location = strdup(location);
+    scp->location = libssh_strdup(location);
     if (scp->location == NULL) {
         ssh_set_error(session, SSH_FATAL,
                       "Error allocating memory for ssh_scp");
@@ -179,7 +179,7 @@ int ssh_scp_init(ssh_scp scp)
         return SSH_ERROR;
     }
 
-    quoted_location = (char *)calloc(1, quoted_location_len);
+    quoted_location = (char *)libssh_calloc(1, quoted_location_len);
     if (quoted_location == NULL) {
         ssh_set_error(scp->session, SSH_FATAL,
                       "Failed to allocate memory for quoted location");
@@ -355,7 +355,7 @@ int ssh_scp_push_directory(ssh_scp scp, const char *dirname, int mode)
     }
 
     vis_encoded_len = (2 * strlen(dir)) + 1;
-    vis_encoded = (char *)calloc(1, vis_encoded_len);
+    vis_encoded = (char *)libssh_calloc(1, vis_encoded_len);
     if (vis_encoded == NULL) {
         ssh_set_error(scp->session, SSH_FATAL,
                       "Failed to allocate buffer to vis encode directory name");
@@ -496,7 +496,7 @@ int ssh_scp_push_file64(ssh_scp scp, const char *filename, uint64_t size,
     }
 
     vis_encoded_len = (2 * strlen(file)) + 1;
-    vis_encoded = (char *)calloc(1, vis_encoded_len);
+    vis_encoded = (char *)libssh_calloc(1, vis_encoded_len);
     if (vis_encoded == NULL) {
         ssh_set_error(scp->session, SSH_FATAL,
                       "Failed to allocate buffer to vis encode file name");
@@ -635,7 +635,7 @@ int ssh_scp_response(ssh_scp scp, char **response)
         SSH_LOG(SSH_LOG_RARE,
                 "SCP: Warning: status code 1 received: %s", msg);
         if (response) {
-            *response = strdup(msg);
+            *response = libssh_strdup(msg);
         }
         return 1;
     }
@@ -644,7 +644,7 @@ int ssh_scp_response(ssh_scp scp, char **response)
         ssh_set_error(scp->session, SSH_FATAL,
                       "SCP: Error: status code 2 received: %s", msg);
         if (response) {
-            *response = strdup(msg);
+            *response = libssh_strdup(msg);
         }
         return 2;
     }
@@ -851,7 +851,7 @@ int ssh_scp_pull_request(ssh_scp scp)
         }
         *p = '\0';
         p++;
-        //mode = strdup(&buffer[1]);
+        //mode = libssh_strdup(&buffer[1]);
         scp->request_mode = ssh_scp_integer_mode(&buffer[1]);
         tmp = p;
         p = strchr(p, ' ');
@@ -861,7 +861,7 @@ int ssh_scp_pull_request(ssh_scp scp)
         *p = 0;
         size = strtoull(tmp, NULL, 10);
         p++;
-        name = strdup(p);
+        name = libssh_strdup(p);
         SAFE_FREE(scp->request_name);
         scp->request_name = name;
         if (buffer[0] == 'C') {
@@ -884,7 +884,7 @@ int ssh_scp_pull_request(ssh_scp scp)
                       "SCP: Warning: %s", &buffer[1]);
         scp->request_type = SSH_SCP_REQUEST_WARNING;
         SAFE_FREE(scp->warning);
-        scp->warning = strdup(&buffer[1]);
+        scp->warning = libssh_strdup(&buffer[1]);
         return scp->request_type;
     case 0x2:
         ssh_set_error(scp->session, SSH_FATAL,
@@ -937,14 +937,14 @@ int ssh_scp_deny_request(ssh_scp scp, const char *reason)
     }
 
     len = strlen(reason) + 3;
-    buffer = malloc(len);
+    buffer = libssh_malloc(len);
     if (buffer == NULL) {
         return SSH_ERROR;
     }
 
     snprintf(buffer, len, "%c%s\n", 2, reason);
     rc = ssh_channel_write(scp->channel, buffer, len - 1);
-    free(buffer);
+    libssh_free(buffer);
     if (rc == SSH_ERROR) {
         return SSH_ERROR;
     }
@@ -1169,7 +1169,7 @@ char *ssh_scp_string_mode(int mode)
 {
     char buffer[16] = {0};
     snprintf(buffer, sizeof(buffer), "%.4o", mode);
-    return strdup(buffer);
+    return libssh_strdup(buffer);
 }
 
 /**

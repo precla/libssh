@@ -100,7 +100,7 @@ ssh_channel ssh_channel_new(ssh_session session)
         return NULL;
     }
 
-    channel = calloc(1, sizeof(struct ssh_channel_struct));
+    channel = libssh_calloc(1, sizeof(struct ssh_channel_struct));
     if (channel == NULL) {
         ssh_set_error_oom(session);
         return NULL;
@@ -2193,7 +2193,7 @@ static char *generate_cookie(void)
     s[i*2+1] = hex[rnd[i] >> 4];
   }
   s[32] = '\0';
-  return strdup(s);
+  return libssh_strdup(s);
 }
 
 /**
@@ -3447,7 +3447,7 @@ int ssh_channel_get_exit_state(ssh_channel channel,
     if (pexit_signal != NULL) {
         *pexit_signal = NULL;
         if (channel->exit.signal != NULL) {
-            *pexit_signal = strdup(channel->exit.signal);
+            *pexit_signal = libssh_strdup(channel->exit.signal);
             if (pexit_signal == NULL) {
                 ssh_set_error_oom(session);
                 return SSH_ERROR;
@@ -3623,18 +3623,18 @@ int ssh_channel_select(ssh_channel *readchans, ssh_channel *writechans,
   }
 
   /* Prepare the outgoing temporary arrays */
-  rchans = calloc(count_ptrs(readchans) + 1, sizeof(ssh_channel));
+  rchans = libssh_calloc(count_ptrs(readchans) + 1, sizeof(ssh_channel));
   if (rchans == NULL) {
     return SSH_ERROR;
   }
 
-  wchans = calloc(count_ptrs(writechans) + 1, sizeof(ssh_channel));
+  wchans = libssh_calloc(count_ptrs(writechans) + 1, sizeof(ssh_channel));
   if (wchans == NULL) {
     SAFE_FREE(rchans);
     return SSH_ERROR;
   }
 
-  echans = calloc(count_ptrs(exceptchans) + 1, sizeof(ssh_channel));
+  echans = libssh_calloc(count_ptrs(exceptchans) + 1, sizeof(ssh_channel));
   if (echans == NULL) {
     SAFE_FREE(rchans);
     SAFE_FREE(wchans);

@@ -69,7 +69,7 @@ sftp_make_client_message(sftp_session sftp, sftp_packet packet)
     int rc;
     int version;
 
-    msg = calloc(1, sizeof(struct sftp_client_message_struct));
+    msg = libssh_calloc(1, sizeof(struct sftp_client_message_struct));
     if (msg == NULL) {
         ssh_set_error_oom(session);
         return NULL;
@@ -307,8 +307,8 @@ const char *sftp_client_message_get_filename(sftp_client_message msg)
 void
 sftp_client_message_set_filename(sftp_client_message msg, const char *newname)
 {
-    free(msg->filename);
-    msg->filename = strdup(newname);
+    libssh_free(msg->filename);
+    msg->filename = libssh_strdup(newname);
 }
 
 const char *sftp_client_message_get_data(sftp_client_message msg)
@@ -662,7 +662,7 @@ ssh_string sftp_handle_alloc(sftp_session sftp, void *info)
     uint32_t i;
 
     if (sftp->handles == NULL) {
-        sftp->handles = calloc(SFTP_HANDLES, sizeof(void *));
+        sftp->handles = libssh_calloc(SFTP_HANDLES, sizeof(void *));
         if (sftp->handles == NULL) {
             return NULL;
         }
@@ -913,7 +913,7 @@ process_open(sftp_client_message client_msg)
         return SSH_ERROR;
     }
 
-    h = calloc(1, sizeof (struct sftp_handle));
+    h = libssh_calloc(1, sizeof (struct sftp_handle));
     if (h == NULL) {
         close(fd);
         SSH_LOG(SSH_LOG_PROTOCOL, "failed to allocate a new handle");
@@ -971,7 +971,7 @@ process_read(sftp_client_message client_msg)
         return SSH_ERROR;
     }
 
-    buffer = malloc(client_msg->len);
+    buffer = libssh_malloc(client_msg->len);
     if (buffer == NULL) {
         ssh_set_error_oom(sftp->session);
         sftp_reply_status(client_msg, SSH_FX_FAILURE, NULL);
@@ -982,7 +982,7 @@ process_read(sftp_client_message client_msg)
     if (readn < 0) {
         sftp_reply_status(client_msg, SSH_FX_FAILURE, NULL);
         SSH_LOG(SSH_LOG_PROTOCOL, "read file error!");
-        free(buffer);
+        libssh_free(buffer);
         return SSH_ERROR;
     } else if (readn > 0) {
         sftp_reply_data(client_msg, buffer, readn);
@@ -990,7 +990,7 @@ process_read(sftp_client_message client_msg)
         sftp_reply_status(client_msg, SSH_FX_EOF, NULL);
     }
 
-    free(buffer);
+    libssh_free(buffer);
     return SSH_OK;
 }
 
@@ -1097,7 +1097,7 @@ process_opendir(sftp_client_message client_msg)
         return SSH_ERROR;
     }
 
-    h = calloc(1, sizeof (struct sftp_handle));
+    h = libssh_calloc(1, sizeof (struct sftp_handle));
     if (h == NULL) {
         closedir(dir);
         SSH_LOG(SSH_LOG_PROTOCOL, "failed to allocate a new handle");
@@ -1106,7 +1106,7 @@ process_opendir(sftp_client_message client_msg)
         return SSH_ERROR;
     }
     h->dirp = dir;
-    h->name = strdup(dir_name);
+    h->name = libssh_strdup(dir_name);
     h->type = SFTP_DIR_HANDLE;
     handle_s = sftp_handle_alloc(client_msg->sftp, h);
 
@@ -1370,7 +1370,7 @@ process_realpath(sftp_client_message client_msg)
         return SSH_ERROR;
     }
     sftp_reply_name(client_msg, path, NULL);
-    free(path);
+    libssh_free(path);
     return SSH_OK;
 }
 
@@ -1658,7 +1658,7 @@ process_extended_statvfs(sftp_client_message client_msg)
         return SSH_ERROR;
     }
 
-    sftp_statvfs = calloc(1, sizeof(struct sftp_statvfs_struct));
+    sftp_statvfs = libssh_calloc(1, sizeof(struct sftp_statvfs_struct));
     if (sftp_statvfs == NULL) {
         SSH_LOG(SSH_LOG_PROTOCOL, "Failed to allocate statvfs structure");
         sftp_reply_status(client_msg, SSH_FX_FAILURE, NULL);
@@ -1680,7 +1680,7 @@ process_extended_statvfs(sftp_client_message client_msg)
     sftp_statvfs->f_namemax = st.f_namemax;
 
     rv = sftp_reply_statvfs(client_msg, sftp_statvfs);
-    free(sftp_statvfs);
+    libssh_free(sftp_statvfs);
     if (rv == 0) {
         return SSH_OK;
     }

@@ -707,7 +707,7 @@ static char *ssh_get_b64_unpadded(const unsigned char *hash, size_t len)
     }
     for (k = strlen(b64_padded); k != 0 && b64_padded[k-1] == '='; k--);
 
-    b64_unpadded = strndup(b64_padded, k);
+    b64_unpadded = libssh_strndup(b64_padded, k);
     SAFE_FREE(b64_padded);
 
     return b64_unpadded;
@@ -776,7 +776,7 @@ char *ssh_get_fingerprint_hash(enum ssh_publickey_hash_type type,
     }
     str_len += 1 + strlen(fingerprint) + 1;
 
-    str = malloc(str_len);
+    str = libssh_malloc(str_len);
     if (str == NULL) {
         SAFE_FREE(fingerprint);
         return NULL;

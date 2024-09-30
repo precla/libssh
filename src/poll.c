@@ -356,7 +356,7 @@ ssh_poll_new(socket_t fd, short events, ssh_poll_callback cb, void *userdata)
 {
     ssh_poll_handle p;
 
-    p = malloc(sizeof(struct ssh_poll_handle_struct));
+    p = libssh_malloc(sizeof(struct ssh_poll_handle_struct));
     if (p == NULL) {
         return NULL;
     }
@@ -519,7 +519,7 @@ ssh_poll_ctx ssh_poll_ctx_new(size_t chunk_size)
 {
     ssh_poll_ctx ctx;
 
-    ctx = malloc(sizeof(struct ssh_poll_ctx_struct));
+    ctx = libssh_malloc(sizeof(struct ssh_poll_ctx_struct));
     if (ctx == NULL) {
         return NULL;
     }
@@ -563,15 +563,15 @@ static int ssh_poll_ctx_resize(ssh_poll_ctx ctx, size_t new_size)
   ssh_poll_handle *pollptrs;
   ssh_pollfd_t *pollfds;
 
-  pollptrs = realloc(ctx->pollptrs, sizeof(ssh_poll_handle) * new_size);
+  pollptrs = libssh_realloc(ctx->pollptrs, sizeof(ssh_poll_handle) * new_size);
   if (pollptrs == NULL) {
     return -1;
   }
   ctx->pollptrs = pollptrs;
 
-  pollfds = realloc(ctx->pollfds, sizeof(ssh_pollfd_t) * new_size);
+  pollfds = libssh_realloc(ctx->pollfds, sizeof(ssh_pollfd_t) * new_size);
   if (pollfds == NULL) {
-    pollptrs = realloc(ctx->pollptrs, sizeof(ssh_poll_handle) * ctx->polls_allocated);
+    pollptrs = libssh_realloc(ctx->pollptrs, sizeof(ssh_poll_handle) * ctx->polls_allocated);
     if (pollptrs == NULL) {
         return -1;
     }
@@ -803,7 +803,7 @@ ssh_event ssh_event_new(void)
 {
     ssh_event event;
 
-    event = malloc(sizeof(struct ssh_event_struct));
+    event = libssh_malloc(sizeof(struct ssh_event_struct));
     if (event == NULL) {
         return NULL;
     }
@@ -811,7 +811,7 @@ ssh_event ssh_event_new(void)
 
     event->ctx = ssh_poll_ctx_new(2);
     if(event->ctx == NULL) {
-        free(event);
+        libssh_free(event);
         return NULL;
     }
 
@@ -819,7 +819,7 @@ ssh_event ssh_event_new(void)
     event->sessions = ssh_list_new();
     if(event->sessions == NULL) {
         ssh_poll_ctx_free(event->ctx);
-        free(event);
+        libssh_free(event);
         return NULL;
     }
 #endif
@@ -868,7 +868,7 @@ ssh_event_add_fd(ssh_event event, socket_t fd, short events,
                                            || fd == SSH_INVALID_SOCKET) {
         return SSH_ERROR;
     }
-    pw = malloc(sizeof(struct ssh_event_fd_wrapper));
+    pw = libssh_malloc(sizeof(struct ssh_event_fd_wrapper));
     if(pw == NULL) {
         return SSH_ERROR;
     }
@@ -879,12 +879,12 @@ ssh_event_add_fd(ssh_event event, socket_t fd, short events,
     /* pw is freed by ssh_event_remove_fd */
     p = ssh_poll_new(fd, events, ssh_event_fd_wrapper_callback, pw);
     if(p == NULL) {
-        free(pw);
+        libssh_free(pw);
         return SSH_ERROR;
     }
 
     if(ssh_poll_ctx_add(event->ctx, p) < 0) {
-        free(pw);
+        libssh_free(pw);
         ssh_poll_free(p);
         return SSH_ERROR;
     }
@@ -1170,7 +1170,7 @@ void ssh_event_free(ssh_event event)
         ssh_list_free(event->sessions);
     }
 #endif
-    free(event);
+    libssh_free(event);
 }
 
 /** @} */

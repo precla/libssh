@@ -790,7 +790,7 @@ int ssh_set_client_kex(ssh_session session)
                 wanted = default_methods[i];
             }
         }
-        client->methods[i] = strdup(wanted);
+        client->methods[i] = libssh_strdup(wanted);
         if (client->methods[i] == NULL) {
             ssh_set_error_oom(session);
             return SSH_ERROR;
@@ -833,7 +833,7 @@ int ssh_kex_append_extensions(ssh_session session, struct ssh_kex_struct *pkex)
         /* Overflow */
         return SSH_ERROR;
     }
-    kex_tmp = realloc(kex, kex_len);
+    kex_tmp = libssh_realloc(kex, kex_len);
     if (kex_tmp == NULL) {
         ssh_set_error_oom(session);
         return SSH_ERROR;
@@ -972,8 +972,8 @@ int ssh_kex_select_methods (ssh_session session)
         if (i == SSH_MAC_C_S || i == SSH_MAC_S_C) {
             aead_hmac = ssh_find_aead_hmac(crypto->kex_methods[i - 2]);
             if (aead_hmac) {
-                free(crypto->kex_methods[i]);
-                crypto->kex_methods[i] = strdup(aead_hmac);
+                libssh_free(crypto->kex_methods[i]);
+                crypto->kex_methods[i] = libssh_strdup(aead_hmac);
             }
         }
         if (crypto->kex_methods[i] == NULL && i < SSH_LANG_C_S) {
@@ -984,7 +984,7 @@ int ssh_kex_select_methods (ssh_session session)
             return SSH_ERROR;
         } else if ((i >= SSH_LANG_C_S) && (crypto->kex_methods[i] == NULL)) {
             /* we can safely do that for languages */
-            crypto->kex_methods[i] = strdup("");
+            crypto->kex_methods[i] = libssh_strdup("");
         }
     }
 
@@ -1102,7 +1102,7 @@ int ssh_send_kex(ssh_session session)
         char *list = kex->methods[SSH_KEX];
         char *colon = strchr(list, ',');
         size_t kex_name_len = colon ? (size_t)(colon - list) : strlen(list);
-        char *kex_name = calloc(kex_name_len + 1, 1);
+        char *kex_name = libssh_calloc(kex_name_len + 1, 1);
         if (kex_name == NULL) {
             ssh_set_error_oom(session);
             goto error;
@@ -1111,7 +1111,7 @@ int ssh_send_kex(ssh_session session)
         SSH_LOG(SSH_LOG_TRACE, "Sending the first kex packet for %s", kex_name);
 
         session->next_crypto->kex_type = kex_select_kex_type(kex_name);
-        free(kex_name);
+        libssh_free(kex_name);
 
         /* run the first step of the DH handshake */
         session->dh_handshake_state = DH_STATE_INIT;
@@ -1242,7 +1242,7 @@ char *ssh_add_to_default_algos(enum ssh_kex_types_e algo, const char *list)
         ret = ssh_find_all_matching(supported_methods[algo], tmp);
     }
 
-    free(tmp);
+    libssh_free(tmp);
     return ret;
 }
 
@@ -1267,9 +1267,9 @@ char *ssh_remove_from_default_algos(enum ssh_kex_types_e algo, const char *list)
 
     if (list == NULL || list[0] == '\0') {
         if (ssh_fips_mode()) {
-            return strdup(fips_methods[algo]);
+            return libssh_strdup(fips_methods[algo]);
         } else {
-            return strdup(default_methods[algo]);
+            return libssh_strdup(default_methods[algo]);
         }
     }
 
@@ -1313,7 +1313,7 @@ char *ssh_prefix_default_algos(enum ssh_kex_types_e algo, const char *list)
         ret = ssh_find_all_matching(supported_methods[algo], tmp);
     }
 
-    free(tmp);
+    libssh_free(tmp);
     return ret;
 }
 
@@ -1493,7 +1493,7 @@ int ssh_make_sessionid(ssh_session session)
 #endif /* WITH_GEX */
         session->next_crypto->digest_len = SHA_DIGEST_LENGTH;
         session->next_crypto->digest_type = SSH_KDF_SHA1;
-        session->next_crypto->secret_hash = malloc(session->next_crypto->digest_len);
+        session->next_crypto->secret_hash = libssh_malloc(session->next_crypto->digest_len);
         if (session->next_crypto->secret_hash == NULL) {
             ssh_set_error_oom(session);
             goto error;
@@ -1510,7 +1510,7 @@ int ssh_make_sessionid(ssh_session session)
 #endif /* WITH_GEX */
         session->next_crypto->digest_len = SHA256_DIGEST_LENGTH;
         session->next_crypto->digest_type = SSH_KDF_SHA256;
-        session->next_crypto->secret_hash = malloc(session->next_crypto->digest_len);
+        session->next_crypto->secret_hash = libssh_malloc(session->next_crypto->digest_len);
         if (session->next_crypto->secret_hash == NULL) {
             ssh_set_error_oom(session);
             goto error;
@@ -1521,7 +1521,7 @@ int ssh_make_sessionid(ssh_session session)
     case SSH_KEX_ECDH_SHA2_NISTP384:
         session->next_crypto->digest_len = SHA384_DIGEST_LENGTH;
         session->next_crypto->digest_type = SSH_KDF_SHA384;
-        session->next_crypto->secret_hash = malloc(session->next_crypto->digest_len);
+        session->next_crypto->secret_hash = libssh_malloc(session->next_crypto->digest_len);
         if (session->next_crypto->secret_hash == NULL) {
             ssh_set_error_oom(session);
             goto error;
@@ -1534,7 +1534,7 @@ int ssh_make_sessionid(ssh_session session)
     case SSH_KEX_ECDH_SHA2_NISTP521:
         session->next_crypto->digest_len = SHA512_DIGEST_LENGTH;
         session->next_crypto->digest_type = SSH_KDF_SHA512;
-        session->next_crypto->secret_hash = malloc(session->next_crypto->digest_len);
+        session->next_crypto->secret_hash = libssh_malloc(session->next_crypto->digest_len);
         if (session->next_crypto->secret_hash == NULL) {
             ssh_set_error_oom(session);
             goto error;
@@ -1549,7 +1549,7 @@ int ssh_make_sessionid(ssh_session session)
      * but complement existing session id.
      */
     if (!session->next_crypto->session_id) {
-        session->next_crypto->session_id = malloc(session->next_crypto->digest_len);
+        session->next_crypto->session_id = libssh_malloc(session->next_crypto->digest_len);
         if (session->next_crypto->session_id == NULL) {
             ssh_set_error_oom(session);
             goto error;
@@ -1691,12 +1691,12 @@ int ssh_generate_session_keys(ssh_session session)
         intkey_srv_to_cli_len = hmac_digest_len(crypto->out_hmac);
     }
 
-    IV_cli_to_srv = malloc(IV_len);
-    IV_srv_to_cli = malloc(IV_len);
-    enckey_cli_to_srv = malloc(enckey_cli_to_srv_len);
-    enckey_srv_to_cli = malloc(enckey_srv_to_cli_len);
-    intkey_cli_to_srv = malloc(intkey_cli_to_srv_len);
-    intkey_srv_to_cli = malloc(intkey_srv_to_cli_len);
+    IV_cli_to_srv = libssh_malloc(IV_len);
+    IV_srv_to_cli = libssh_malloc(IV_len);
+    enckey_cli_to_srv = libssh_malloc(enckey_cli_to_srv_len);
+    enckey_srv_to_cli = libssh_malloc(enckey_srv_to_cli_len);
+    intkey_cli_to_srv = libssh_malloc(intkey_cli_to_srv_len);
+    intkey_srv_to_cli = libssh_malloc(intkey_srv_to_cli_len);
     if (IV_cli_to_srv == NULL || IV_srv_to_cli == NULL ||
         enckey_cli_to_srv == NULL || enckey_srv_to_cli == NULL ||
         intkey_cli_to_srv == NULL || intkey_srv_to_cli == NULL) {
@@ -1770,12 +1770,12 @@ error:
     ssh_string_burn(k_string);
     SSH_STRING_FREE(k_string);
     if (rc != 0) {
-        free(IV_cli_to_srv);
-        free(IV_srv_to_cli);
-        free(enckey_cli_to_srv);
-        free(enckey_srv_to_cli);
-        free(intkey_cli_to_srv);
-        free(intkey_srv_to_cli);
+        libssh_free(IV_cli_to_srv);
+        libssh_free(IV_srv_to_cli);
+        libssh_free(enckey_cli_to_srv);
+        libssh_free(enckey_srv_to_cli);
+        libssh_free(intkey_cli_to_srv);
+        libssh_free(intkey_srv_to_cli);
     }
 
     return rc;

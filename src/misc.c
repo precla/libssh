@@ -114,7 +114,7 @@ char *ssh_get_user_home_dir(void)
   char *szPath = NULL;
 
   if (SHGetSpecialFolderPathA(NULL, tmp, CSIDL_PROFILE, TRUE)) {
-    szPath = malloc(strlen(tmp) + 1);
+    szPath = libssh_malloc(strlen(tmp) + 1);
     if (szPath == NULL) {
       return NULL;
     }
@@ -187,7 +187,7 @@ char *ssh_get_local_username(void)
     /* get the size */
     GetUserName(NULL, &size);
 
-    user = (char *)malloc(size);
+    user = (char *)libssh_malloc(size);
     if (user == NULL) {
         return NULL;
     }
@@ -199,7 +199,7 @@ char *ssh_get_local_username(void)
         }
     }
 
-    free(user);
+    libssh_free(user);
 
     return NULL;
 }
@@ -230,7 +230,7 @@ int ssh_is_ipaddr_v4(const char *str)
 int ssh_is_ipaddr(const char *str)
 {
     int rc = SOCKET_ERROR;
-    char *s = strdup(str);
+    char *s = libssh_strdup(str);
 
     if (s == NULL) {
         return -1;
@@ -244,7 +244,7 @@ int ssh_is_ipaddr(const char *str)
         if (network_interface != NULL) {
             rc = if_nametoindex(network_interface + 1);
             if (rc == 0) {
-                free(s);
+                libssh_free(s);
                 return 0;
             }
             *network_interface = '\0';
@@ -255,12 +255,12 @@ int ssh_is_ipaddr(const char *str)
                                  (struct sockaddr*)&ss,
                                  &sslen);
         if (rc == 0) {
-            free(s);
+            libssh_free(s);
             return 1;
         }
     }
 
-    free(s);
+    libssh_free(s);
     return ssh_is_ipaddr_v4(str);
 }
 #else /* _WIN32 */
@@ -285,10 +285,10 @@ char *ssh_get_user_home_dir(void)
         }
         snprintf(buf, sizeof(buf), "%s", szPath);
 
-        return strdup(buf);
+        return libssh_strdup(buf);
     }
 
-    szPath = strdup(pwd.pw_dir);
+    szPath = libssh_strdup(pwd.pw_dir);
 
     return szPath;
 }
@@ -341,11 +341,11 @@ char *ssh_get_local_username(void)
         return NULL;
     }
 
-    name = strdup(pwd.pw_name);
+    name = libssh_strdup(pwd.pw_name);
     rc = ssh_check_username_syntax(name);
 
     if (rc != SSH_OK) {
-        free(name);
+        libssh_free(name);
         return NULL;
     }
 
@@ -368,7 +368,7 @@ int ssh_is_ipaddr_v4(const char *str)
 int ssh_is_ipaddr(const char *str)
 {
     int rc = -1;
-    char *s = strdup(str);
+    char *s = libssh_strdup(str);
 
     if (s == NULL) {
         return -1;
@@ -381,19 +381,19 @@ int ssh_is_ipaddr(const char *str)
         if (network_interface != NULL) {
             rc = if_nametoindex(network_interface + 1);
             if (rc == 0) {
-                free(s);
+                libssh_free(s);
                 return 0;
             }
             *network_interface = '\0';
         }
         rc = inet_pton(AF_INET6, s, &dest6);
         if (rc > 0) {
-            free(s);
+            libssh_free(s);
             return 1;
         }
     }
 
-    free(s);
+    libssh_free(s);
     return ssh_is_ipaddr_v4(str);
 }
 
@@ -407,7 +407,7 @@ char *ssh_lowercase(const char* str)
     return NULL;
   }
 
-  new = strdup(str);
+  new = libssh_strdup(str);
   if (new == NULL) {
     return NULL;
   }
@@ -430,7 +430,7 @@ char *ssh_hostport(const char *host, int port)
 
     /* 3 for []:, 5 for 65536 and 1 for nul */
     len = strlen(host) + 3 + 5 + 1;
-    dest = malloc(len);
+    dest = libssh_malloc(len);
     if (dest == NULL) {
         return NULL;
     }
@@ -463,7 +463,7 @@ char *ssh_get_hexa(const unsigned char *what, size_t len)
         return NULL;
     }
 
-    hexa = malloc(hlen + 1);
+    hexa = libssh_malloc(hlen + 1);
     if (hexa == NULL) {
         return NULL;
     }
@@ -490,7 +490,7 @@ void ssh_print_hexa(const char *descr, const unsigned char *what, size_t len)
     }
     fprintf(stderr, "%s: %s\n", descr, hexa);
 
-    free(hexa);
+    libssh_free(hexa);
 }
 
 /**
@@ -715,7 +715,7 @@ const char *ssh_version(int req_version)
 
 struct ssh_list *ssh_list_new(void)
 {
-    struct ssh_list *ret = malloc(sizeof(struct ssh_list));
+    struct ssh_list *ret = libssh_malloc(sizeof(struct ssh_list));
     if (ret == NULL) {
         return NULL;
     }
@@ -775,7 +775,7 @@ size_t ssh_list_count(const struct ssh_list *list)
 
 static struct ssh_iterator *ssh_iterator_new(const void *data)
 {
-    struct ssh_iterator *iterator = malloc(sizeof(struct ssh_iterator));
+    struct ssh_iterator *iterator = libssh_malloc(sizeof(struct ssh_iterator));
 
     if (iterator == NULL) {
         return NULL;
@@ -921,7 +921,7 @@ char *ssh_dirname (const char *path)
   size_t len;
 
   if (path == NULL || *path == '\0') {
-    return strdup(".");
+    return libssh_strdup(".");
   }
 
   len = strlen(path);
@@ -931,22 +931,22 @@ char *ssh_dirname (const char *path)
 
   /* We have only slashes */
   if (len == 0) {
-    return strdup("/");
+    return libssh_strdup("/");
   }
 
   /* goto next slash */
   while(len > 0 && path[len - 1] != '/') --len;
 
   if (len == 0) {
-    return strdup(".");
+    return libssh_strdup(".");
   } else if (len == 1) {
-    return strdup("/");
+    return libssh_strdup("/");
   }
 
   /* Remove slashes again */
   while(len > 0 && path[len - 1] == '/') --len;
 
-  new = malloc(len + 1);
+  new = libssh_malloc(len + 1);
   if (new == NULL) {
     return NULL;
   }
@@ -981,7 +981,7 @@ char *ssh_basename (const char *path)
   size_t len;
 
   if (path == NULL || *path == '\0') {
-    return strdup(".");
+    return libssh_strdup(".");
   }
 
   len = strlen(path);
@@ -990,7 +990,7 @@ char *ssh_basename (const char *path)
 
   /* We have only slashes */
   if (len == 0) {
-    return strdup("/");
+    return libssh_strdup("/");
   }
 
   while(len > 0 && path[len - 1] != '/') --len;
@@ -1001,10 +1001,10 @@ char *ssh_basename (const char *path)
 
     while(len > 0 && s[len - 1] == '/') --len;
   } else {
-    return strdup(path);
+    return libssh_strdup(path);
   }
 
-  new = malloc(len + 1);
+  new = libssh_malloc(len + 1);
   if (new == NULL) {
     return NULL;
   }
@@ -1121,7 +1121,7 @@ char *ssh_path_expand_tilde(const char *d)
     size_t lh = 0;
 
     if (d[0] != '~') {
-        return strdup(d);
+        return libssh_strdup(d);
     }
     d++;
 
@@ -1129,7 +1129,7 @@ char *ssh_path_expand_tilde(const char *d)
     p = strchr(d, '/');
     if (p != NULL && p > d) {
 #ifdef _WIN32
-        return strdup(d);
+        return libssh_strdup(d);
 #else
         struct passwd *pw;
         size_t s = p - d;
@@ -1145,7 +1145,7 @@ char *ssh_path_expand_tilde(const char *d)
             return NULL;
         }
         ld = strlen(p);
-        h = strdup(pw->pw_dir);
+        h = libssh_strdup(pw->pw_dir);
 #endif
     } else {
         ld = strlen(d);
@@ -1157,7 +1157,7 @@ char *ssh_path_expand_tilde(const char *d)
     }
     lh = strlen(h);
 
-    r = malloc(ld + lh + 1);
+    r = libssh_malloc(ld + lh + 1);
     if (r == NULL) {
         SAFE_FREE(h);
         return NULL;
@@ -1203,14 +1203,14 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
 
     if (strlen(r) > MAX_BUF_SIZE) {
         ssh_set_error(session, SSH_FATAL, "string to expand too long");
-        free(r);
+        libssh_free(r);
         return NULL;
     }
 
-    buf = malloc(MAX_BUF_SIZE);
+    buf = libssh_malloc(MAX_BUF_SIZE);
     if (buf == NULL) {
         ssh_set_error_oom(session);
-        free(r);
+        libssh_free(r);
         return NULL;
     }
 
@@ -1223,8 +1223,8 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
             buf[i] = *p;
             i++;
             if (i >= MAX_BUF_SIZE) {
-                free(buf);
-                free(r);
+                libssh_free(buf);
+                libssh_free(r);
                 return NULL;
             }
             buf[i] = '\0';
@@ -1241,12 +1241,12 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
                 goto escape;
             case 'd':
                 if (session->opts.sshdir) {
-                    x = strdup(session->opts.sshdir);
+                    x = libssh_strdup(session->opts.sshdir);
                 } else {
                     ssh_set_error(session, SSH_FATAL,
                             "Cannot expand sshdir");
-                    free(buf);
-                    free(r);
+                    libssh_free(buf);
+                    libssh_free(r);
                     return NULL;
                 }
                 break;
@@ -1255,28 +1255,28 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
                 break;
             case 'l':
                 if (gethostname(host, sizeof(host) == 0)) {
-                    x = strdup(host);
+                    x = libssh_strdup(host);
                 }
                 break;
             case 'h':
                 if (session->opts.host) {
-                    x = strdup(session->opts.host);
+                    x = libssh_strdup(session->opts.host);
                 } else {
                     ssh_set_error(session, SSH_FATAL,
                             "Cannot expand host");
-                    free(buf);
-                    free(r);
+                    libssh_free(buf);
+                    libssh_free(r);
                     return NULL;
                 }
                 break;
             case 'r':
                 if (session->opts.username) {
-                    x = strdup(session->opts.username);
+                    x = libssh_strdup(session->opts.username);
                 } else {
                     ssh_set_error(session, SSH_FATAL,
                             "Cannot expand username");
-                    free(buf);
-                    free(r);
+                    libssh_free(buf);
+                    libssh_free(r);
                     return NULL;
                 }
                 break;
@@ -1287,21 +1287,21 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
                   snprintf(tmp, sizeof(tmp), "%hu",
                            (uint16_t)(session->opts.port > 0 ? session->opts.port
                                                              : 22));
-                  x = strdup(tmp);
+                  x = libssh_strdup(tmp);
                 }
                 break;
             default:
                 ssh_set_error(session, SSH_FATAL,
                         "Wrong escape sequence detected");
-                free(buf);
-                free(r);
+                libssh_free(buf);
+                libssh_free(r);
                 return NULL;
         }
 
         if (x == NULL) {
             ssh_set_error_oom(session);
-            free(buf);
-            free(r);
+            libssh_free(buf);
+            libssh_free(r);
             return NULL;
         }
 
@@ -1309,9 +1309,9 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
         if (i >= MAX_BUF_SIZE) {
             ssh_set_error(session, SSH_FATAL,
                     "String too long");
-            free(buf);
-            free(x);
-            free(r);
+            libssh_free(buf);
+            libssh_free(x);
+            libssh_free(r);
             return NULL;
         }
         l = strlen(buf);
@@ -1320,13 +1320,13 @@ char *ssh_path_expand_escape(ssh_session session, const char *s)
         SAFE_FREE(x);
     }
 
-    free(r);
+    libssh_free(r);
 
     /* strip the unused space by realloc */
-    x = realloc(buf, strlen(buf) + 1);
+    x = libssh_realloc(buf, strlen(buf) + 1);
     if (x == NULL) {
         ssh_set_error_oom(session);
-        free(buf);
+        libssh_free(buf);
     }
     return x;
 }
@@ -1597,7 +1597,7 @@ char *strndup(const char *s, size_t n)
         return NULL;
     }
 
-    x = malloc(n + 1);
+    x = libssh_malloc(n + 1);
     if (x == NULL) {
         return NULL;
     }
@@ -1930,7 +1930,7 @@ char *ssh_strreplace(const char *src, const char *pattern, const char *replace)
     }
 
     if (pattern == NULL || replace == NULL) {
-        return strdup(src);
+        return libssh_strdup(src);
     }
 
     p = strstr(src, pattern);
@@ -1942,7 +1942,7 @@ char *ssh_strreplace(const char *src, const char *pattern, const char *replace)
         size_t len  = strlen(src);
         size_t len_replaced = len + replace_len - pattern_len + 1;
 
-        src_replaced = (char *)malloc(len_replaced);
+        src_replaced = (char *)libssh_malloc(len_replaced);
 
         if (src_replaced == NULL) {
             return NULL;
@@ -1954,7 +1954,7 @@ char *ssh_strreplace(const char *src, const char *pattern, const char *replace)
         memcpy(src_replaced + offset + replace_len, src + offset + pattern_len, len - offset - pattern_len);
         return src_replaced; /* free in the caller */
     } else {
-        return strdup(src);
+        return libssh_strdup(src);
     }
 }
 
@@ -2131,7 +2131,7 @@ int ssh_check_hostname_syntax(const char *hostname)
     }
 
     /* strtok_r writes into the string, keep the input clean */
-    s = strdup(hostname);
+    s = libssh_strdup(hostname);
     if (s == NULL) {
         return SSH_ERROR;
     }
@@ -2139,7 +2139,7 @@ int ssh_check_hostname_syntax(const char *hostname)
     it = strtok_r(s, ".", &buf);
     /* if the token has 0 length */
     if (it == NULL) {
-        free(s);
+        libssh_free(s);
         return SSH_ERROR;
     }
     do {
@@ -2149,7 +2149,7 @@ int ssh_check_hostname_syntax(const char *hostname)
              * with a number */
             isalnum(it[0]) == 0 ||
             isalnum(it[it_len - 1]) == 0) {
-            free(s);
+            libssh_free(s);
             return SSH_ERROR;
         }
         while (*it != '\0') {
@@ -2157,14 +2157,14 @@ int ssh_check_hostname_syntax(const char *hostname)
             /* the "." is allowed too, but tokenization removes it from the
              * string */
             if (isalnum(c) == 0 && c != '-') {
-                free(s);
+                libssh_free(s);
                 return SSH_ERROR;
             }
             it++;
         }
     } while ((it = strtok_r(NULL, ".", &buf)) != NULL);
 
-    free(s);
+    libssh_free(s);
 
     return SSH_OK;
 }

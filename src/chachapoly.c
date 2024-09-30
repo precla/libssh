@@ -47,7 +47,7 @@ static int chacha20_set_encrypt_key(struct ssh_cipher_struct *cipher,
     (void)IV;
 
     if (cipher->chacha20_schedule == NULL) {
-        sched = malloc(sizeof *sched);
+        sched = libssh_malloc(sizeof *sched);
         if (sched == NULL){
             return -1;
         }

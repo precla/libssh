@@ -148,6 +148,7 @@ pub fn build(b: *std.Build) void {
 
     source_files.appendSlice(&.{
         "src/agent.c",
+        "src/alloc.c",
         "src/auth.c",
         "src/base64.c",
         "src/bignum.c",

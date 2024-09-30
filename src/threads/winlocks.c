@@ -30,7 +30,7 @@
 
 static int ssh_winlock_mutex_init (void **priv)
 {
-    CRITICAL_SECTION *lock = malloc(sizeof(CRITICAL_SECTION));
+    CRITICAL_SECTION *lock = libssh_malloc(sizeof(CRITICAL_SECTION));
 
     if (lock == NULL) {
         return ENOMEM;
@@ -46,7 +46,7 @@ static int ssh_winlock_mutex_init (void **priv)
 static int ssh_winlock_mutex_destroy (void **lock)
 {
     DeleteCriticalSection((CRITICAL_SECTION *) *lock);
-    free(*lock);
+    libssh_free(*lock);
 
     return 0;
 }
@@ -87,7 +87,7 @@ void ssh_mutex_lock(SSH_MUTEX *mutex)
     CRITICAL_SECTION *mutex_tmp = NULL;
 
     if (*mutex == NULL) {
-        mutex_tmp = malloc(sizeof(CRITICAL_SECTION));
+        mutex_tmp = libssh_malloc(sizeof(CRITICAL_SECTION));
 
         if (mutex_tmp == NULL) {
             exit(ENOMEM);
@@ -100,7 +100,7 @@ void ssh_mutex_lock(SSH_MUTEX *mutex)
                                                NULL);
         if (rc != NULL) {
             DeleteCriticalSection(mutex_tmp);
-            free(mutex_tmp);
+            libssh_free(mutex_tmp);
             exit(ENOMEM);
         }
     }

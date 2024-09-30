@@ -237,7 +237,7 @@ int ssh_dh_init_common(struct ssh_crypto_struct *crypto)
     struct dh_ctx *ctx = NULL;
     int rc;
 
-    ctx = calloc(1, sizeof(*ctx));
+    ctx = libssh_calloc(1, sizeof(*ctx));
     if (ctx == NULL) {
         return SSH_ERROR;
     }
@@ -282,7 +282,7 @@ void ssh_dh_cleanup(struct ssh_crypto_struct *crypto)
 
     ssh_dh_free_modulus(ctx);
     ssh_dh_free_generator(ctx);
-    free(ctx);
+    libssh_free(ctx);
     crypto->dh_ctx = NULL;
 }
 

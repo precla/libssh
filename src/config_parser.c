@@ -190,7 +190,7 @@ int ssh_config_parse_uri(const char *tok,
             goto error;
         }
         if (username != NULL) {
-            *username = strndup(tok, endp - tok);
+            *username = libssh_strndup(tok, endp - tok);
             if (*username == NULL) {
                 goto error;
             }
@@ -232,7 +232,7 @@ int ssh_config_parse_uri(const char *tok,
         goto error;
     }
     if (hostname != NULL) {
-        *hostname = strndup(tok, endp - tok);
+        *hostname = libssh_strndup(tok, endp - tok);
         if (*hostname == NULL) {
             goto error;
         }
@@ -263,7 +263,7 @@ int ssh_config_parse_uri(const char *tok,
             goto error;
         }
         if (port != NULL) {
-            *port = strdup(endp + 1);
+            *port = libssh_strdup(endp + 1);
             if (*port == NULL) {
                 goto error;
             }

@@ -32,12 +32,12 @@ int pki_key_generate_ed25519(ssh_key key)
 {
     int rc;
 
-    key->ed25519_privkey = malloc(sizeof (ed25519_privkey));
+    key->ed25519_privkey = libssh_malloc(sizeof (ed25519_privkey));
     if (key->ed25519_privkey == NULL) {
         goto error;
     }
 
-    key->ed25519_pubkey = malloc(sizeof (ed25519_pubkey));
+    key->ed25519_pubkey = libssh_malloc(sizeof (ed25519_pubkey));
     if (key->ed25519_pubkey == NULL) {
         goto error;
     }
@@ -65,7 +65,7 @@ int pki_ed25519_sign(const ssh_key privkey,
     uint8_t *buffer;
     uint64_t dlen = 0;
 
-    buffer = malloc(hlen + ED25519_SIG_LEN);
+    buffer = libssh_malloc(hlen + ED25519_SIG_LEN);
     if (buffer == NULL) {
         return SSH_ERROR;
     }
@@ -84,7 +84,7 @@ int pki_ed25519_sign(const ssh_key privkey,
         goto error;
     }
 
-    sig->ed25519_sig = malloc(ED25519_SIG_LEN);
+    sig->ed25519_sig = libssh_malloc(ED25519_SIG_LEN);
     if (sig->ed25519_sig == NULL) {
         goto error;
     }
@@ -113,12 +113,12 @@ int pki_ed25519_verify(const ssh_key pubkey,
         return SSH_ERROR;
     }
 
-    buffer = malloc(hlen + ED25519_SIG_LEN);
+    buffer = libssh_malloc(hlen + ED25519_SIG_LEN);
     if (buffer == NULL) {
         return SSH_ERROR;
     }
 
-    buffer2 = malloc(hlen + ED25519_SIG_LEN);
+    buffer2 = libssh_malloc(hlen + ED25519_SIG_LEN);
     if (buffer2 == NULL) {
         goto error;
     }

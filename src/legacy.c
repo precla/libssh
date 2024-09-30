@@ -119,7 +119,7 @@ int ssh_userauth_privatekey_file(ssh_session session,
   int rc = SSH_AUTH_ERROR;
   size_t klen = strlen(filename) + 4 + 1;
 
-  pubkeyfile = malloc(klen);
+  pubkeyfile = libssh_malloc(klen);
   if (pubkeyfile == NULL) {
     ssh_set_error_oom(session);
 
@@ -444,7 +444,7 @@ ssh_private_key privatekey_from_file(ssh_session session,
         return NULL;
     }
 
-    privkey = malloc(sizeof(struct ssh_private_key_struct));
+    privkey = libssh_malloc(sizeof(struct ssh_private_key_struct));
     if (privkey == NULL) {
         ssh_key_free(key);
         return NULL;
@@ -537,7 +537,7 @@ ssh_public_key publickey_from_string(ssh_session session, ssh_string pubkey_s) {
         return NULL;
     }
 
-    pubkey = malloc(sizeof(struct ssh_public_key_struct));
+    pubkey = libssh_malloc(sizeof(struct ssh_public_key_struct));
     if (pubkey == NULL) {
         ssh_key_free(key);
         return NULL;
@@ -702,7 +702,7 @@ int ssh_try_publickey_from_file(ssh_session session,
     }
 
     len = strlen(keyfile) + 5;
-    pubkey_file = malloc(len);
+    pubkey_file = libssh_malloc(len);
     if (pubkey_file == NULL) {
         return -1;
     }

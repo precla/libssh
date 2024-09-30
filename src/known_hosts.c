@@ -217,7 +217,7 @@ static int match_hashed_host(const char *host, const char *sourcehash)
     return 0;
   }
 
-  source = strdup(sourcehash + 3);
+  source = libssh_strdup(sourcehash + 3);
   if (source == NULL) {
     return 0;
   }
@@ -482,7 +482,7 @@ char * ssh_dump_knownhost(ssh_session session) {
         return NULL;
     }
 
-    buffer = calloc (1, MAX_LINE_SIZE);
+    buffer = libssh_calloc (1, MAX_LINE_SIZE);
     if (!buffer) {
         SAFE_FREE(host);
         return NULL;

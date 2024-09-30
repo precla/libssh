@@ -31,7 +31,7 @@ bignum ssh_mbedcry_bn_new(void)
 {
     bignum bn;
 
-    bn = malloc(sizeof(mbedtls_mpi));
+    bn = libssh_malloc(sizeof(mbedtls_mpi));
     if (bn) {
         mbedtls_mpi_init(bn);
     }

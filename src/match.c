@@ -452,7 +452,7 @@ match_cidr_address_list(const char *address,
         }
     }
 
-    b = list = strdup(addrlist);
+    b = list = libssh_strdup(addrlist);
     if (b == NULL) {
         return -1;
     }

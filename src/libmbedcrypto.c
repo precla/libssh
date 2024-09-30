@@ -66,7 +66,7 @@ HMACCTX hmac_init(const void *key, size_t len, enum ssh_hmac_e type)
     const mbedtls_md_info_t *md_info = NULL;
     int rc;
 
-    ctx = malloc(sizeof(mbedtls_md_context_t));
+    ctx = libssh_malloc(sizeof(mbedtls_md_context_t));
     if (ctx == NULL) {
         return NULL;
     }
@@ -600,7 +600,7 @@ chacha20_poly1305_set_key(struct ssh_cipher_struct *cipher,
     int ret = SSH_ERROR, rv;
 
     if (cipher->chacha20_schedule == NULL) {
-        ctx = calloc(1, sizeof(*ctx));
+        ctx = libssh_calloc(1, sizeof(*ctx));
         if (ctx == NULL) {
             return -1;
         }

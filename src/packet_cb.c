@@ -67,7 +67,7 @@ SSH_PACKET_CALLBACK(ssh_packet_disconnect_callback)
     }
 
     if (error != NULL) {
-        session->peer_discon_msg = strdup(error);
+        session->peer_discon_msg = libssh_strdup(error);
     }
 
     SSH_LOG(SSH_LOG_PACKET,
@@ -290,8 +290,8 @@ SSH_PACKET_CALLBACK(ssh_packet_ext_info)
         } else {
             SSH_LOG(SSH_LOG_PACKET, "Unknown extension: %s", name);
         }
-        free(name);
-        free(value);
+        libssh_free(name);
+        libssh_free(value);
     }
 
     return SSH_PACKET_USED;

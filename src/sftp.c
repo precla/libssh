@@ -65,7 +65,7 @@ struct sftp_ext_struct {
 static sftp_ext sftp_ext_new(void) {
   sftp_ext ext;
 
-  ext = calloc(1, sizeof(struct sftp_ext_struct));
+  ext = libssh_calloc(1, sizeof(struct sftp_ext_struct));
   if (ext == NULL) {
     return NULL;
   }
@@ -108,7 +108,7 @@ sftp_session sftp_new(ssh_session session)
         return NULL;
     }
 
-    sftp = calloc(1, sizeof(struct sftp_session_struct));
+    sftp = libssh_calloc(1, sizeof(struct sftp_session_struct));
     if (sftp == NULL) {
         ssh_set_error_oom(session);
 
@@ -121,7 +121,7 @@ sftp_session sftp_new(ssh_session session)
         goto error;
     }
 
-    sftp->read_packet = calloc(1, sizeof(struct sftp_packet_struct));
+    sftp->read_packet = libssh_calloc(1, sizeof(struct sftp_packet_struct));
     if (sftp->read_packet == NULL) {
         ssh_set_error_oom(session);
         goto error;
@@ -175,7 +175,7 @@ sftp_new_channel(ssh_session session, ssh_channel channel)
         return NULL;
     }
 
-    sftp = calloc(1, sizeof(struct sftp_session_struct));
+    sftp = libssh_calloc(1, sizeof(struct sftp_session_struct));
     if (sftp == NULL) {
         ssh_set_error_oom(session);
         return NULL;
@@ -187,7 +187,7 @@ sftp_new_channel(ssh_session session, ssh_channel channel)
         goto error;
     }
 
-    sftp->read_packet = calloc(1, sizeof(struct sftp_packet_struct));
+    sftp->read_packet = libssh_calloc(1, sizeof(struct sftp_packet_struct));
     if (sftp->read_packet == NULL) {
         ssh_set_error_oom(session);
         goto error;
@@ -224,13 +224,13 @@ sftp_server_new(ssh_session session, ssh_channel chan)
 {
     sftp_session sftp = NULL;
 
-    sftp = calloc(1, sizeof(struct sftp_session_struct));
+    sftp = libssh_calloc(1, sizeof(struct sftp_session_struct));
     if (sftp == NULL) {
         ssh_set_error_oom(session);
         return NULL;
     }
 
-    sftp->read_packet = calloc(1, sizeof(struct sftp_packet_struct));
+    sftp->read_packet = libssh_calloc(1, sizeof(struct sftp_packet_struct));
     if (sftp->read_packet == NULL) {
         goto error;
     }
@@ -490,7 +490,7 @@ int sftp_init(sftp_session sftp)
                 ext_name, ext_data);
 
         count++;
-        tmp = realloc(sftp->ext->name, count * sizeof(char *));
+        tmp = libssh_realloc(sftp->ext->name, count * sizeof(char *));
         if (tmp == NULL) {
             ssh_set_error_oom(sftp->session);
             SAFE_FREE(ext_name);
@@ -502,7 +502,7 @@ int sftp_init(sftp_session sftp)
         tmp[count - 1] = ext_name;
         sftp->ext->name = tmp;
 
-        tmp = realloc(sftp->ext->data, count * sizeof(char *));
+        tmp = libssh_realloc(sftp->ext->data, count * sizeof(char *));
         if (tmp == NULL) {
             ssh_set_error_oom(sftp->session);
             SAFE_FREE(ext_name);
@@ -528,7 +528,7 @@ int sftp_init(sftp_session sftp)
         const char *static_ssh_err_msg = ssh_get_error(sftp->session);
         int ssh_err_code = ssh_get_error_code(sftp->session);
         int sftp_err_code = sftp_get_error(sftp);
-        char *ssh_err_msg = strdup(static_ssh_err_msg);
+        char *ssh_err_msg = libssh_strdup(static_ssh_err_msg);
         if (ssh_err_msg == NULL) {
             ssh_set_error_oom(sftp->session);
             sftp_set_error(sftp, SSH_FX_FAILURE);
@@ -637,7 +637,7 @@ static sftp_file parse_handle_msg(sftp_message msg){
     return NULL;
   }
 
-  file = calloc(1, sizeof(struct sftp_file_struct));
+  file = libssh_calloc(1, sizeof(struct sftp_file_struct));
   if (file == NULL) {
     ssh_set_error_oom(msg->sftp->session);
     sftp_set_error(msg->sftp, SSH_FX_FAILURE);
@@ -725,15 +725,15 @@ sftp_dir sftp_opendir(sftp_session sftp, const char *path)
             file = parse_handle_msg(msg);
             sftp_message_free(msg);
             if (file != NULL) {
-                dir = calloc(1, sizeof(struct sftp_dir_struct));
+                dir = libssh_calloc(1, sizeof(struct sftp_dir_struct));
                 if (dir == NULL) {
                     ssh_set_error_oom(sftp->session);
-                    free(file);
+                    libssh_free(file);
                     return NULL;
                 }
 
                 dir->sftp = sftp;
-                dir->name = strdup(path);
+                dir->name = libssh_strdup(path);
                 if (dir->name == NULL) {
                     SAFE_FREE(dir);
                     SAFE_FREE(file);
@@ -2381,7 +2381,7 @@ static sftp_statvfs_t sftp_parse_statvfs(sftp_session sftp, ssh_buffer buf) {
   sftp_statvfs_t  statvfs;
   int rc;
 
-  statvfs = calloc(1, sizeof(struct sftp_statvfs_struct));
+  statvfs = libssh_calloc(1, sizeof(struct sftp_statvfs_struct));
   if (statvfs == NULL) {
     ssh_set_error_oom(sftp->session);
     sftp_set_error(sftp, SSH_FX_FAILURE);
@@ -2679,7 +2679,7 @@ void sftp_statvfs_free(sftp_statvfs_t statvfs) {
 
 static sftp_limits_t sftp_limits_new(void)
 {
-    return calloc(1, sizeof(struct sftp_limits_struct));
+    return libssh_calloc(1, sizeof(struct sftp_limits_struct));
 }
 
 static sftp_limits_t sftp_parse_limits(sftp_session sftp, ssh_buffer buf)
@@ -3290,7 +3290,7 @@ sftp_home_directory(sftp_session sftp, const char *username)
         }
 
         if (longpath) {
-            free(longpath);
+            libssh_free(longpath);
         }
         sftp_attributes_free(attr);
         return homepath;

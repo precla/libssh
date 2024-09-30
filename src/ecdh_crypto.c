@@ -268,7 +268,7 @@ int ecdh_build_k(ssh_session session)
       return -1;
   }
 
-  buffer = malloc(len);
+  buffer = libssh_malloc(len);
   if (buffer == NULL) {
       EC_POINT_clear_free(pubkey);
       return -1;
@@ -281,12 +281,12 @@ int ecdh_build_k(ssh_session session)
                         NULL);
   EC_POINT_clear_free(pubkey);
   if (rc <= 0) {
-      free(buffer);
+      libssh_free(buffer);
       return -1;
   }
 
   bignum_bin2bn(buffer, len, &next_crypto->shared_secret);
-  free(buffer);
+  libssh_free(buffer);
 #else
   const char *curve = NULL;
   EVP_PKEY *pubkey = NULL;
@@ -383,7 +383,7 @@ int ecdh_build_k(ssh_session session)
       return -1;
   }
 
-  secret = malloc(secret_len);
+  secret = libssh_malloc(secret_len);
   if (secret == NULL) {
       ssh_set_error_oom(session);
       EVP_PKEY_CTX_free(dh_ctx);
@@ -397,14 +397,14 @@ int ecdh_build_k(ssh_session session)
                     "Could not derive shared key: %s",
                     ERR_error_string(ERR_get_error(), NULL));
       EVP_PKEY_CTX_free(dh_ctx);
-      free(secret);
+      libssh_free(secret);
       return -1;
   }
 
   EVP_PKEY_CTX_free(dh_ctx);
 
   bignum_bin2bn(secret, secret_len, &next_crypto->shared_secret);
-  free(secret);
+  libssh_free(secret);
 #endif /* OPENSSL_VERSION_NUMBER */
   if (next_crypto->shared_secret == NULL) {
 #if OPENSSL_VERSION_NUMBER < 0x30000000L

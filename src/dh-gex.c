@@ -460,11 +460,11 @@ static int ssh_retrieve_dhgroup_file(FILE *moduli,
         if (proposed_size == *best_size && invn_chance(best_nlines)) {
             SAFE_FREE(*best_generator);
             SAFE_FREE(*best_modulus);
-            *best_generator = strdup(generator);
+            *best_generator = libssh_strdup(generator);
             if (*best_generator == NULL) {
                 return SSH_ERROR;
             }
-            *best_modulus = strdup(modulus);
+            *best_modulus = libssh_strdup(modulus);
             if (*best_modulus == NULL) {
                 SAFE_FREE(*best_generator);
                 return SSH_ERROR;

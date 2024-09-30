@@ -157,7 +157,7 @@ ssh_socket ssh_socket_new(ssh_session session)
 {
     ssh_socket s;
 
-    s = calloc(1, sizeof(struct ssh_socket_struct));
+    s = libssh_calloc(1, sizeof(struct ssh_socket_struct));
     if (s == NULL) {
         ssh_set_error_oom(session);
         return NULL;
@@ -1039,7 +1039,7 @@ jump_thread_func(void *arg)
     session = jump_thread_data->session;
 
     next_port = session->opts.port;
-    next_hostname = strdup(session->opts.host);
+    next_hostname = libssh_strdup(session->opts.host);
 
     jump_session = ssh_new();
     if (jump_session == NULL) {
@@ -1227,7 +1227,7 @@ ssh_socket_connect_proxyjump(ssh_socket s)
         return SSH_ERROR;
     }
 
-    jump_thread_data = calloc(1, sizeof(struct jump_thread_data_struct));
+    jump_thread_data = libssh_calloc(1, sizeof(struct jump_thread_data_struct));
     if (jump_thread_data == NULL) {
         ssh_set_error_oom(s->session);
         return SSH_ERROR;

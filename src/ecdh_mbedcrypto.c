@@ -70,7 +70,7 @@ int ssh_client_ecdh_init(ssh_session session)
         return SSH_ERROR;
     }
 
-    session->next_crypto->ecdh_privkey = malloc(sizeof(mbedtls_ecp_keypair));
+    session->next_crypto->ecdh_privkey = libssh_malloc(sizeof(mbedtls_ecp_keypair));
     if (session->next_crypto->ecdh_privkey == NULL) {
         return SSH_ERROR;
     }
@@ -165,7 +165,7 @@ int ecdh_build_k(ssh_session session)
         goto out;
     }
 
-    session->next_crypto->shared_secret = malloc(sizeof(mbedtls_mpi));
+    session->next_crypto->shared_secret = libssh_malloc(sizeof(mbedtls_mpi));
     if (session->next_crypto->shared_secret == NULL) {
         rc = SSH_ERROR;
         goto out;
@@ -222,7 +222,7 @@ SSH_PACKET_CALLBACK(ssh_packet_server_ecdh_init){
         return SSH_ERROR;
     }
 
-    session->next_crypto->ecdh_privkey = malloc(sizeof(mbedtls_ecp_keypair));
+    session->next_crypto->ecdh_privkey = libssh_malloc(sizeof(mbedtls_ecp_keypair));
     if (session->next_crypto->ecdh_privkey == NULL) {
         ssh_set_error_oom(session);
         return SSH_ERROR;

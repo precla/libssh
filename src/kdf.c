@@ -52,7 +52,7 @@ struct ssh_mac_ctx_struct {
 
 static ssh_mac_ctx ssh_mac_ctx_init(enum ssh_kdf_digest type)
 {
-    ssh_mac_ctx ctx = malloc(sizeof(struct ssh_mac_ctx_struct));
+    ssh_mac_ctx ctx = libssh_malloc(sizeof(struct ssh_mac_ctx_struct));
     if (ctx == NULL) {
         return NULL;
     }

@@ -165,7 +165,7 @@ unsigned char *ssh_packet_encrypt(ssh_session session, void *data, size_t len)
                     " on at least one blocksize (received %zu)", len);
       return NULL;
   }
-  out = calloc(1, len);
+  out = libssh_calloc(1, len);
   if (out == NULL) {
     return NULL;
   }

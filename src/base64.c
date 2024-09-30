@@ -66,7 +66,7 @@ ssh_buffer base64_to_bin(const char *source)
     size_t len;
     int equals;
 
-    base64 = strdup(source);
+    base64 = libssh_strdup(source);
     if (base64 == NULL) {
         return NULL;
     }
@@ -281,7 +281,7 @@ uint8_t *bin_to_base64(const uint8_t *source, size_t len)
     size_t flen = len + (3 - (len % 3)); /* round to upper 3 multiple */
     flen = (4 * flen) / 3 + 1;
 
-    base64 = malloc(flen);
+    base64 = libssh_malloc(flen);
     if (base64 == NULL) {
         return NULL;
     }

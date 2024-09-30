@@ -82,12 +82,12 @@ struct ssh_tokens_st *ssh_tokenize(const char *chain, char separator)
         return NULL;
     }
 
-    tokens = calloc(1, sizeof(struct ssh_tokens_st));
+    tokens = libssh_calloc(1, sizeof(struct ssh_tokens_st));
     if (tokens == NULL) {
         return NULL;
     }
 
-    tokens->buffer = strdup(chain);
+    tokens->buffer = libssh_strdup(chain);
     if (tokens->buffer == NULL) {
         goto error;
     }
@@ -102,7 +102,7 @@ struct ssh_tokens_st *ssh_tokenize(const char *chain, char separator)
     } while(found != NULL);
 
     /* Allocate tokens list */
-    tokens->tokens = calloc(num_tokens + 1, sizeof(char *));
+    tokens->tokens = libssh_calloc(num_tokens + 1, sizeof(char *));
     if (tokens->tokens == NULL) {
         goto error;
     }
@@ -177,7 +177,7 @@ char *ssh_find_matching(const char *available_list,
     for (i = 0; p_tok->tokens[i]; i++) {
         for (j = 0; a_tok->tokens[j]; j++) {
             if (strcmp(a_tok->tokens[j], p_tok->tokens[i]) == 0) {
-                ret = strdup(a_tok->tokens[j]);
+                ret = libssh_strdup(a_tok->tokens[j]);
                 goto out;
             }
         }
@@ -218,7 +218,7 @@ char *ssh_find_all_matching(const char *available_list,
 
     max = MAX(strlen(available_list), strlen(preferred_list));
 
-    ret = calloc(1, max + 1);
+    ret = libssh_calloc(1, max + 1);
     if (ret == NULL) {
         return NULL;
     }
@@ -299,7 +299,7 @@ char *ssh_remove_duplicates(const char *list)
         goto out;
     }
 
-    should_copy = calloc(1, max_len);
+    should_copy = libssh_calloc(1, max_len);
     if (should_copy == NULL) {
         goto out;
     }
@@ -330,7 +330,7 @@ char *ssh_remove_duplicates(const char *list)
 
     num_tokens = i;
 
-    ret = calloc(1, max_len);
+    ret = libssh_calloc(1, max_len);
     if (ret == NULL) {
         goto out;
     }
@@ -392,7 +392,7 @@ char *ssh_append_without_duplicates(const char *list,
 
     /* Add room for ending '\0' and for middle ',' */
     concat_len += 2;
-    concat = calloc(1, concat_len);
+    concat = libssh_calloc(1, concat_len);
     if (concat == NULL) {
         return NULL;
     }
@@ -452,7 +452,7 @@ char *ssh_remove_all_matching(const char *list,
         goto out;
     }
 
-    ret = calloc(1, strlen(list) + 1);
+    ret = libssh_calloc(1, strlen(list) + 1);
     if (ret == NULL) {
         goto out;
     }
@@ -523,7 +523,7 @@ char *ssh_prefix_without_duplicates(const char *list,
 
     /* Add room for ending '\0' and for middle ',' */
     concat_len += 2;
-    concat = calloc(concat_len, 1);
+    concat = libssh_calloc(concat_len, 1);
     if (concat == NULL) {
         return NULL;
     }

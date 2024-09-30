@@ -87,7 +87,7 @@ ssh_connector ssh_connector_new(ssh_session session)
 {
     ssh_connector connector;
 
-    connector = calloc(1, sizeof(struct ssh_connector_struct));
+    connector = libssh_calloc(1, sizeof(struct ssh_connector_struct));
     if (connector == NULL){
         ssh_set_error_oom(session);
         return NULL;
@@ -137,7 +137,7 @@ void ssh_connector_free (ssh_connector connector)
         connector->out_poll = NULL;
     }
 
-    free(connector);
+    libssh_free(connector);
 }
 
 int ssh_connector_set_in_channel(ssh_connector connector,

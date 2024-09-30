@@ -83,6 +83,22 @@
 #define SSH_DEPRECATED
 #endif
 
+typedef void* (*libssh_malloc_func)(size_t size);
+typedef void* (*libssh_realloc_func)(void* ptr, size_t size);
+typedef void* (*libssh_calloc_func)(size_t count, size_t size);
+typedef void (*libssh_free_func)(void* ptr);
+typedef char* (*libssh_strdup_func)(const char* s);
+typedef char* (*libssh_strndup_func)(const char* s, size_t n);
+
+int libssh_replace_allocator(libssh_malloc_func malloc_func,
+                            libssh_realloc_func realloc_func,
+                            libssh_calloc_func calloc_func,
+                            libssh_free_func free_func,
+                            libssh_strdup_func strdup_func,
+                            libssh_strndup_func strndup_func);
+
+#include "libssh/alloc.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

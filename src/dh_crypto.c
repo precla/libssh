@@ -407,7 +407,7 @@ int ssh_dh_init_common(struct ssh_crypto_struct *crypto)
     struct dh_ctx *ctx;
     int rc;
 
-    ctx = calloc(1, sizeof(*ctx));
+    ctx = libssh_calloc(1, sizeof(*ctx));
     if (ctx == NULL) {
         return SSH_ERROR;
     }
@@ -448,7 +448,7 @@ void ssh_dh_cleanup(struct ssh_crypto_struct *crypto)
         EVP_PKEY_free(crypto->dh_ctx->keypair[0]);
         EVP_PKEY_free(crypto->dh_ctx->keypair[1]);
 #endif /* OPENSSL_VERSION_NUMBER */
-        free(crypto->dh_ctx);
+        libssh_free(crypto->dh_ctx);
         crypto->dh_ctx = NULL;
     }
 }
@@ -537,7 +537,7 @@ int ssh_dh_compute_shared_secret(struct dh_ctx *dh_ctx, int local, int remote,
     }
 
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
-    kstring = malloc(DH_size(dh_ctx->keypair[local]));
+    kstring = libssh_malloc(DH_size(dh_ctx->keypair[local]));
     if (kstring == NULL) {
         rc = SSH_ERROR;
         goto done;
@@ -579,7 +579,7 @@ int ssh_dh_compute_shared_secret(struct dh_ctx *dh_ctx, int local, int remote,
         goto done;
     }
 
-    kstring = malloc(klen);
+    kstring = libssh_malloc(klen);
     if (kstring == NULL) {
         rc = SSH_ERROR;
         goto done;
@@ -603,6 +603,6 @@ done:
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
     EVP_PKEY_CTX_free(evp_ctx);
 #endif
-    free(kstring);
+    libssh_free(kstring);
     return rc;
 }

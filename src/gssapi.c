@@ -46,7 +46,7 @@ ssh_gssapi_init(ssh_session session)
 {
     if (session->gssapi != NULL)
         return SSH_OK;
-    session->gssapi = calloc(1, sizeof(struct ssh_gssapi_struct));
+    session->gssapi = libssh_calloc(1, sizeof(struct ssh_gssapi_struct));
     if (session->gssapi == NULL) {
         ssh_set_error_oom(session);
         return SSH_ERROR;
@@ -180,7 +180,7 @@ ssh_gssapi_handle_userauth(ssh_session session, const char *user,
         ssh_string oid_s = NULL;
         session->gssapi->state = SSH_GSSAPI_STATE_RCV_TOKEN;
         SAFE_FREE(session->gssapi->user);
-        session->gssapi->user = strdup(user);
+        session->gssapi->user = libssh_strdup(user);
         oid_s = session->server_callbacks->gssapi_select_oid_function(
             session,
             user,
@@ -211,7 +211,7 @@ ssh_gssapi_handle_userauth(ssh_session session, const char *user,
     for (i=0; i < supported->count; ++i){
         ptr = ssh_get_hexa(supported->elements[i].elements, supported->elements[i].length);
         SSH_LOG(SSH_LOG_DEBUG, "Supported mech %zu: %s", i, ptr);
-        free(ptr);
+        libssh_free(ptr);
     }
 
     for (i=0 ; i< n_oid ; ++i){
@@ -294,7 +294,7 @@ ssh_gssapi_handle_userauth(ssh_session session, const char *user,
         }
     }
     session->gssapi->mech.length = oid.length;
-    session->gssapi->mech.elements = malloc(oid.length);
+    session->gssapi->mech.elements = libssh_malloc(oid.length);
     if (session->gssapi->mech.elements == NULL){
         ssh_set_error_oom(session);
         gss_release_oid_set(&min_stat, &selected);
@@ -302,7 +302,7 @@ ssh_gssapi_handle_userauth(ssh_session session, const char *user,
     }
     memcpy(session->gssapi->mech.elements, oid.elements, oid.length);
     gss_release_oid_set(&min_stat, &selected);
-    session->gssapi->user = strdup(user);
+    session->gssapi->user = libssh_strdup(user);
     session->gssapi->service = service_name;
     session->gssapi->state = SSH_GSSAPI_STATE_RCV_TOKEN;
     return ssh_gssapi_send_response(session, oids[i]);
@@ -319,7 +319,7 @@ ssh_gssapi_name_to_char(gss_name_t name)
                          "converting name",
                          maj_stat,
                          min_stat);
-    ptr = malloc(buffer.length + 1);
+    ptr = libssh_malloc(buffer.length + 1);
     if (ptr == NULL) {
         gss_release_buffer(&min_stat, &buffer);
         return NULL;
@@ -748,7 +748,7 @@ int ssh_gssapi_auth_mic(ssh_session session)
     }
 
     /* copy username */
-    session->gssapi->user = strdup(session->opts.username);
+    session->gssapi->user = libssh_strdup(session->opts.username);
     if (session->gssapi->user == NULL) {
         ssh_set_error_oom(session);
         return SSH_AUTH_ERROR;
@@ -764,7 +764,7 @@ int ssh_gssapi_auth_mic(ssh_session session)
     n_oids = selected->count;
     SSH_LOG(SSH_LOG_DEBUG, "Sending %zu oids", n_oids);
 
-    oids = calloc(n_oids, sizeof(ssh_string));
+    oids = libssh_calloc(n_oids, sizeof(ssh_string));
     if (oids == NULL) {
         ssh_set_error_oom(session);
         return SSH_AUTH_ERROR;
@@ -789,7 +789,7 @@ out:
     for (i = 0; i < n_oids; i++) {
         SSH_STRING_FREE(oids[i]);
     }
-    free(oids);
+    libssh_free(oids);
     gss_release_oid_set(&min_stat, &selected);
 
     if (rc != SSH_ERROR) {
@@ -819,12 +819,12 @@ static gss_OID ssh_gssapi_oid_from_string(ssh_string oid_s)
         return NULL;
     }
 
-    ret = malloc(sizeof(gss_OID_desc));
+    ret = libssh_malloc(sizeof(gss_OID_desc));
     if (ret == NULL) {
         return NULL;
     }
 
-    ret->elements = malloc(len - 2);
+    ret->elements = libssh_malloc(len - 2);
     if (ret->elements == NULL) {
         SAFE_FREE(ret);
         return NULL;

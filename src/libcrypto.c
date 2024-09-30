@@ -767,7 +767,7 @@ chacha20_poly1305_set_key(struct ssh_cipher_struct *cipher,
 #endif
 
     if (cipher->chacha20_schedule == NULL) {
-        ctx = calloc(1, sizeof(*ctx));
+        ctx = libssh_calloc(1, sizeof(*ctx));
         if (ctx == NULL) {
             return -1;
         }

@@ -43,7 +43,7 @@ initcompress(ssh_session session, int level)
     z_stream *stream = NULL;
     int status;
 
-    stream = calloc(1, sizeof(z_stream));
+    stream = libssh_calloc(1, sizeof(z_stream));
     if (stream == NULL) {
         return NULL;
     }
@@ -151,7 +151,7 @@ initdecompress(ssh_session session)
     z_stream *stream = NULL;
     int status;
 
-    stream = calloc(1, sizeof(z_stream));
+    stream = libssh_calloc(1, sizeof(z_stream));
     if (stream == NULL) {
         return NULL;
     }
