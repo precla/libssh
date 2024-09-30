@@ -226,6 +226,14 @@ pub fn build(b: *std.Build) void {
             "src/external/poly1305.c",
             "src/chachapoly.c",
         }) catch unreachable;
+
+        source_files.appendSlice(&.{
+            "src/external/curve25519_ref.c",
+        }) catch unreachable;
+
+        source_files.appendSlice(&.{
+            "src/dh-gex.c",
+        }) catch unreachable;
     }
 
     lib.addCSourceFiles(.{

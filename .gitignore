@@ -10,3 +10,4 @@ tags
 /build
 /obj*
 doc/tags.xml
+zig-out/*
