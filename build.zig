@@ -41,7 +41,7 @@ pub fn build(b: *std.Build) void {
             .HAVE_OPENSSL_ECDH_H = false,
             .HAVE_OPENSSL_EC_H = false,
             .HAVE_OPENSSL_ECDSA_H = false,
-            .HAVE_PTHREAD_H = true,
+            .HAVE_PTHREAD_H = false,
             .HAVE_OPENSSL_ECC = false,
             .HAVE_GCRYPT_ECC = false,
             .HAVE_ECC = true,
@@ -79,11 +79,11 @@ pub fn build(b: *std.Build) void {
             .HAVE_LIBCRYPTO = false,
             .HAVE_LIBGCRYPT = false,
             .HAVE_LIBMBEDCRYPTO = true,
-            .HAVE_PTHREAD = true,
+            .HAVE_PTHREAD = false,
             .HAVE_CMOCKA = false,
 
-            .HAVE_GCC_THREAD_LOCAL_STORAGE = true,
-            .HAVE_MSC_THREAD_LOCAL_STORAGE = true,
+            .HAVE_GCC_THREAD_LOCAL_STORAGE = false,
+            .HAVE_MSC_THREAD_LOCAL_STORAGE = false,
 
             .HAVE_FALLTHROUGH_ATTRIBUTE = true,
             .HAVE_UNUSED_ATTRIBUTE = true,
