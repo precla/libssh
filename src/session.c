@@ -886,6 +886,31 @@ int ssh_get_poll_flags(ssh_session session)
   return ssh_socket_get_poll_flags (session->socket);
 }
 
+int ssh_session_handle_poll(ssh_session session, int revents)
+{
+    ssh_poll_handle ph;
+    int rc;
+
+    if (session == NULL || session->socket == NULL) {
+        return SSH_ERROR;
+    }
+
+    ph = ssh_socket_get_poll_handle(session->socket);
+    if (ph == NULL) {
+        return SSH_ERROR;
+    }
+
+    rc = ssh_socket_pollcallback(ph,
+                                 ssh_socket_get_fd(session->socket),
+                                 revents,
+                                 session->socket);
+    if (rc < 0) {
+        return SSH_ERROR;
+    }
+
+    return SSH_OK;
+}
+
 /**
  * @brief Get the disconnect message from the server.
  *

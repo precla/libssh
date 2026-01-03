@@ -224,6 +224,7 @@ LIBSSH_4_5_0    # Released
         ssh_get_log_userdata;
         ssh_get_openssh_version;
         ssh_get_poll_flags;
+        ssh_session_handle_poll;
         ssh_get_pubkey;
         ssh_get_pubkey_hash;
         ssh_get_publickey;

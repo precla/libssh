@@ -626,6 +626,7 @@ LIBSSH_API int ssh_get_random(void *where,int len,int strong);
 LIBSSH_API int ssh_get_version(ssh_session session);
 LIBSSH_API int ssh_get_status(ssh_session session);
 LIBSSH_API int ssh_get_poll_flags(ssh_session session);
+LIBSSH_API int ssh_session_handle_poll(ssh_session session, int revents);
 LIBSSH_API int ssh_init(void);
 LIBSSH_API int ssh_is_blocking(ssh_session session);
 LIBSSH_API int ssh_is_connected(ssh_session session);
