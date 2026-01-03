@@ -6,6 +6,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
     const t = target.result;
+    const with_server = b.option(bool, "WITH_SERVER", "Enable server-side APIs") orelse false;
 
     var lib = b.addStaticLibrary(.{
         .name = "ssh",
@@ -19,7 +20,8 @@ pub fn build(b: *std.Build) void {
             .include_path = "config.h",
         },
         .{
-            .GLOBAL_CLIENT_CONFIG = "KLLtestlibsshclientconfig",
+            .GLOBAL_BIND_CONFIG = "/etc/ssh/libssh_server_config",
+            .GLOBAL_CLIENT_CONFIG = "/etc/ssh/ssh_config",
             .HAVE_ARGP_H = true,
             .HAVE_ARPA_INET_H = true,
             .HAVE_GLOB_H = true,
@@ -101,7 +103,7 @@ pub fn build(b: *std.Build) void {
             .WITH_GSSAPI = false,
             .WITH_ZLIB = false,
             .WITH_SFTP = false,
-            .WITH_SERVER = false,
+            .WITH_SERVER = with_server,
             .WITH_GEX = true,
             .WITH_INSECURE_NONE = true,
             .WITH_BLOWFISH_CIPHER = false,
@@ -196,6 +198,14 @@ pub fn build(b: *std.Build) void {
         "src/token.c",
         "src/pki_ed25519_common.c",
     }) catch unreachable;
+
+    if (with_server) {
+        source_files.appendSlice(&.{
+            "src/server.c",
+            "src/bind.c",
+            "src/bind_config.c",
+        }) catch unreachable;
+    }
 
     if (t.os.tag != .windows) {
         source_files.appendSlice(&.{
