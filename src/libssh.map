@@ -157,6 +157,7 @@ LIBSSH_4_5_0    # Released
         ssh_channel_poll;
         ssh_channel_poll_timeout;
         ssh_channel_read;
+        ssh_channel_read_buffered;
         ssh_channel_read_nonblocking;
         ssh_channel_read_timeout;
         ssh_channel_request_auth_agent;

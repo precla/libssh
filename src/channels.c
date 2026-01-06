@@ -3170,6 +3170,89 @@ int ssh_channel_read_timeout(ssh_channel channel,
 }
 
 /**
+ * @brief Reads buffered data from a channel without polling the socket.
+ *
+ * @param[in]  channel   The channel to read from.
+ *
+ * @param[out] dest      The destination buffer which will get the data.
+ *
+ * @param[in]  count     The count of bytes to be read.
+ *
+ * @param[in]  is_stderr A boolean value to mark reading from the stderr flow.
+ *
+ * @return               The number of bytes read, SSH_AGAIN if nothing is
+ *                       available, SSH_ERROR on error, and SSH_EOF if the
+ *                       channel is EOF.
+ */
+int ssh_channel_read_buffered(ssh_channel channel,
+                              void *dest,
+                              uint32_t count,
+                              int is_stderr)
+{
+    ssh_session session;
+    ssh_buffer stdbuf;
+    uint32_t len;
+
+    if (channel == NULL) {
+        return SSH_ERROR;
+    }
+    if (dest == NULL) {
+        ssh_set_error_invalid(channel->session);
+        return SSH_ERROR;
+    }
+
+    session = channel->session;
+    if (count == 0) {
+        return 0;
+    }
+
+    stdbuf = channel->stdout_buffer;
+    if (is_stderr) {
+        stdbuf = channel->stderr_buffer;
+    }
+
+    if (session->session_state == SSH_SESSION_STATE_ERROR) {
+        return SSH_ERROR;
+    }
+
+    if (channel->state == SSH_CHANNEL_STATE_CLOSED) {
+        ssh_set_error(session,
+                      SSH_FATAL,
+                      "Remote channel is closed.");
+        return SSH_ERROR;
+    }
+
+    len = ssh_buffer_get_len(stdbuf);
+    if (len == 0) {
+        if (channel->remote_eof) {
+            return SSH_EOF;
+        }
+        return SSH_AGAIN;
+    }
+
+    if (len > count) {
+        len = count;
+    }
+
+    memcpy(dest, ssh_buffer_get(stdbuf), len);
+    ssh_buffer_pass_bytes(stdbuf, len);
+    if (channel->counter != NULL) {
+        channel->counter->in_bytes += len;
+    }
+
+    /* Try completing the delayed_close */
+    if (channel->delayed_close && !ssh_channel_has_unread_data(channel)) {
+        channel->state = SSH_CHANNEL_STATE_CLOSED;
+    }
+
+    if (grow_window(session, channel) == SSH_ERROR) {
+        return SSH_ERROR;
+    }
+
+    return len;
+}
+
+/**
  * @brief Do a nonblocking read on the channel.
  *
  * A nonblocking read on the specified channel. it will return <= count bytes of
