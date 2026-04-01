@@ -5,7 +5,7 @@ const Path = std.Build.LazyPath;
 pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
     const target = b.standardTargetOptions(.{});
-    const t = target.result;
+    const target_info = target.result;
     const with_server = b.option(bool, "WITH_SERVER", "Enable server-side APIs") orelse false;
 
     var lib = b.addLibrary(.{
@@ -77,15 +77,15 @@ pub fn build(b: *std.Build) void {
             .HAVE_POLL = true,
             .HAVE_SELECT = true,
             .HAVE_CLOCK_GETTIME = true,
-            .HAVE_NTOHLL = if (t.os.tag == .linux) false else true,
-            .HAVE_HTONLL = if (t.os.tag == .linux) false else true,
+            .HAVE_NTOHLL = if (target_info.os.tag == .linux) false else true,
+            .HAVE_HTONLL = if (target_info.os.tag == .linux) false else true,
             .HAVE_STRTOULL = true,
             .HAVE___STRTOULL = true,
             .HAVE__STRTOUI64 = true,
             .HAVE_GLOB = true,
             .HAVE_EXPLICIT_BZERO = false,
-            .HAVE_MEMSET_S = if (t.os.tag == .linux) false else true,
-            .HAVE_SECURE_ZERO_MEMORY = if (t.os.tag == .linux) false else true,
+            .HAVE_MEMSET_S = if (target_info.os.tag == .linux) false else true,
+            .HAVE_SECURE_ZERO_MEMORY = if (target_info.os.tag == .linux) false else true,
             .HAVE_CMOCKA_SET_TEST_FILTER = false,
 
             .HAVE_LIBCRYPTO = false,
@@ -131,11 +131,11 @@ pub fn build(b: *std.Build) void {
 
     const version_header = b.addConfigHeader(.{
         .style = .{ .cmake = b.path("include/libssh/libssh_version.h.cmake") },
-        .include_path = "libssh/libssh_version.h"
-        }, .{
-        .libssh_VERSION_MAJOR=0,
-        .libssh_VERSION_MINOR=11,
-        .libssh_VERSION_PATCH=0,
+        .include_path = "libssh/libssh_version.h",
+    }, .{
+        .libssh_VERSION_MAJOR = 0,
+        .libssh_VERSION_MINOR = 11,
+        .libssh_VERSION_PATCH = 0,
     });
 
     lib.addConfigHeader(config_header);
