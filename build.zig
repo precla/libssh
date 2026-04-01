@@ -146,13 +146,13 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const flags: []const []const u8 = &.{
+    const flags = &.{
         "-Wall",
         "-Wextra",
         "-Wpedantic",
     };
 
-    const base_sources: []const []const u8 = &.{
+    const base_sources = &.{
         "src/agent.c",
         "src/alloc.c",
         "src/auth.c",
