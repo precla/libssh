@@ -17,7 +17,7 @@
     .dependencies = .{
         .libmbedtls = .{
             .url = "https://github.com/actonlang/mbedtls/archive/refs/heads/zig-build-v0.13.tar.gz",
-            .hash = "122064f9a1d07bc9e96f5abbae590727890e23691088c2daf038fdba3d4b108d5e24",
+            .hash = "1220beac3fc56317e137fcb1eaba5a292addfc8526eb2b43974225b7d356c9c8b234",
         },
     },
     .paths = .{
