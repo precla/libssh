@@ -11,3 +11,4 @@ tags
 /obj*
 doc/tags.xml
 zig-out/*
+zig-pkg/*

@@ -4,8 +4,8 @@
     .fingerprint = 0xda3551606a094491,
     .dependencies = .{
         .libmbedtls = .{
-            .url = "https://github.com/actonlang/mbedtls/archive/refs/heads/zig-build-v0.15.tar.gz",
-            .hash = "N-V-__8AAKBbMwJvAtBVjQuHovpe9CAkkQycFm9-uwJLpzOJ",
+            .url = "https://github.com/precla/mbedtls/archive/refs/heads/zig-build-v0.16.tar.gz",
+            .hash = "N-V-__8AADpaMwJrbP9ictpUKuF90hLWOLYWJ817du7rgI3N",
         },
     },
     .paths = .{

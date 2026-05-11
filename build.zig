@@ -22,111 +22,7 @@ pub fn build(b: *std.Build) void {
             .style = .{ .cmake = b.path("config.h.cmake") },
             .include_path = "config.h",
         },
-        .{
-            .PACKAGE = "libssh",
-            .PROJECT_NAME = "libssh",
-            .VERSION = "0.11.0",
-            .PROJECT_VERSION = "0.11.0",
-            .SYSCONFDIR = "/etc",
-            .BINARYDIR = "/usr/bin",
-            .SOURCEDIR = "/usr/src",
-            .GLOBAL_BIND_CONFIG = "/etc/ssh/libssh_server_config",
-            .GLOBAL_CLIENT_CONFIG = "/etc/ssh/ssh_config",
-            .HAVE_ARGP_H = true,
-            .HAVE_ARPA_INET_H = true,
-            .HAVE_GLOB_H = true,
-            .HAVE_VALGRIND_VALGRIND_H = false,
-            .HAVE_PTY_H = true,
-            .HAVE_UTMP_H = true,
-            .HAVE_UTIL_H = true,
-            .HAVE_LIBUTIL_H = true,
-            .HAVE_SYS_TIME_H = true,
-            .HAVE_SYS_UTIME_H = false,
-            .HAVE_IO_H = true,
-            .HAVE_TERMIOS_H = true,
-            .HAVE_UNISTD_H = true,
-            .HAVE_STDINT_H = true,
-            .HAVE_OPENSSL_AES_H = false,
-            .HAVE_WSPIAPI_H = true,
-            .HAVE_OPENSSL_BLOWFISH_H = false,
-            .HAVE_OPENSSL_DES_H = false,
-            .HAVE_OPENSSL_ECDH_H = false,
-            .HAVE_OPENSSL_EC_H = false,
-            .HAVE_OPENSSL_ECDSA_H = false,
-            .HAVE_PTHREAD_H = false,
-            .HAVE_OPENSSL_ECC = false,
-            .HAVE_GCRYPT_ECC = false,
-            .HAVE_ECC = true,
-            .HAVE_GLOB_GL_FLAGS_MEMBER = true,
-            .HAVE_GCRYPT_CHACHA_POLY = false,
-
-            .HAVE_OPENSSL_EVP_CHACHA20 = false,
-            .HAVE_OPENSSL_EVP_KDF_CTX = false,
-            .HAVE_OPENSSL_FIPS_MODE = false,
-            .HAVE_SNPRINTF = true,
-            .HAVE__SNPRINTF = true,
-            .HAVE__SNPRINTF_S = true,
-            .HAVE_VSNPRINTF = true,
-            .HAVE__VSNPRINTF = true,
-            .HAVE__VSNPRINTF_S = true,
-            .HAVE_ISBLANK = true,
-            .HAVE_STRNCPY = true,
-            .HAVE_STRNDUP = true,
-            .HAVE_CFMAKERAW = true,
-            .HAVE_GETADDRINFO = true,
-            .HAVE_POLL = true,
-            .HAVE_SELECT = true,
-            .HAVE_CLOCK_GETTIME = true,
-            .HAVE_NTOHLL = if (target_info.os.tag == .linux) false else true,
-            .HAVE_HTONLL = if (target_info.os.tag == .linux) false else true,
-            .HAVE_STRTOULL = true,
-            .HAVE___STRTOULL = true,
-            .HAVE__STRTOUI64 = true,
-            .HAVE_GLOB = true,
-            .HAVE_EXPLICIT_BZERO = false,
-            .HAVE_MEMSET_S = if (target_info.os.tag == .linux) false else true,
-            .HAVE_SECURE_ZERO_MEMORY = if (target_info.os.tag == .linux) false else true,
-            .HAVE_CMOCKA_SET_TEST_FILTER = false,
-
-            .HAVE_LIBCRYPTO = false,
-            .HAVE_LIBGCRYPT = false,
-            .HAVE_LIBMBEDCRYPTO = true,
-            .HAVE_PTHREAD = false,
-            .HAVE_CMOCKA = false,
-
-            .HAVE_GCC_THREAD_LOCAL_STORAGE = false,
-            .HAVE_MSC_THREAD_LOCAL_STORAGE = false,
-
-            .HAVE_FALLTHROUGH_ATTRIBUTE = true,
-            .HAVE_UNUSED_ATTRIBUTE = true,
-            .HAVE_WEAK_ATTRIBUTE = true,
-
-            .HAVE_CONSTRUCTOR_ATTRIBUTE = true,
-            .HAVE_DESTRUCTOR_ATTRIBUTE = true,
-
-            .HAVE_GCC_VOLATILE_MEMORY_PROTECTION = true,
-
-            .HAVE_COMPILER__FUNC__ = true,
-            .HAVE_COMPILER__FUNCTION__ = true,
-
-            .HAVE_GCC_BOUNDED_ATTRIBUTE = false,
-            .WITH_GSSAPI = false,
-            .WITH_ZLIB = false,
-            .WITH_SFTP = false,
-            .WITH_SERVER = with_server,
-            .WITH_GEX = true,
-            .WITH_INSECURE_NONE = true,
-            .WITH_BLOWFISH_CIPHER = false,
-            .DEBUG_CRYPTO = false,
-            .DEBUG_PACKET = false,
-            .WITH_PCAP = false,
-            .DEBUG_CALLTRACE = false,
-            .WITH_NACL = false,
-            .WITH_PKCS11_URI = true,
-            .WITH_PKCS11_PROVIDER = true,
-
-            .WORDS_BIGENDIAN = false
-        },
+        .{ .PACKAGE = "libssh", .PROJECT_NAME = "libssh", .VERSION = "0.11.0", .PROJECT_VERSION = "0.11.0", .SYSCONFDIR = "/etc", .BINARYDIR = "/usr/bin", .SOURCEDIR = "/usr/src", .GLOBAL_BIND_CONFIG = "/etc/ssh/libssh_server_config", .GLOBAL_CLIENT_CONFIG = "/etc/ssh/ssh_config", .HAVE_ARGP_H = true, .HAVE_ARPA_INET_H = true, .HAVE_GLOB_H = true, .HAVE_VALGRIND_VALGRIND_H = false, .HAVE_PTY_H = true, .HAVE_UTMP_H = true, .HAVE_UTIL_H = true, .HAVE_LIBUTIL_H = true, .HAVE_SYS_TIME_H = true, .HAVE_SYS_UTIME_H = false, .HAVE_IO_H = true, .HAVE_TERMIOS_H = true, .HAVE_UNISTD_H = true, .HAVE_STDINT_H = true, .HAVE_OPENSSL_AES_H = false, .HAVE_WSPIAPI_H = true, .HAVE_OPENSSL_BLOWFISH_H = false, .HAVE_OPENSSL_DES_H = false, .HAVE_OPENSSL_ECDH_H = false, .HAVE_OPENSSL_EC_H = false, .HAVE_OPENSSL_ECDSA_H = false, .HAVE_PTHREAD_H = false, .HAVE_OPENSSL_ECC = false, .HAVE_GCRYPT_ECC = false, .HAVE_ECC = true, .HAVE_GLOB_GL_FLAGS_MEMBER = true, .HAVE_GCRYPT_CHACHA_POLY = false, .HAVE_OPENSSL_EVP_CHACHA20 = false, .HAVE_OPENSSL_EVP_KDF_CTX = false, .HAVE_OPENSSL_FIPS_MODE = false, .HAVE_SNPRINTF = true, .HAVE__SNPRINTF = true, .HAVE__SNPRINTF_S = true, .HAVE_VSNPRINTF = true, .HAVE__VSNPRINTF = true, .HAVE__VSNPRINTF_S = true, .HAVE_ISBLANK = true, .HAVE_STRNCPY = true, .HAVE_STRNDUP = true, .HAVE_CFMAKERAW = true, .HAVE_GETADDRINFO = true, .HAVE_POLL = true, .HAVE_SELECT = true, .HAVE_CLOCK_GETTIME = true, .HAVE_NTOHLL = if (target_info.os.tag == .linux) false else true, .HAVE_HTONLL = if (target_info.os.tag == .linux) false else true, .HAVE_STRTOULL = true, .HAVE___STRTOULL = true, .HAVE__STRTOUI64 = true, .HAVE_GLOB = true, .HAVE_EXPLICIT_BZERO = false, .HAVE_MEMSET_S = if (target_info.os.tag == .linux) false else true, .HAVE_SECURE_ZERO_MEMORY = if (target_info.os.tag == .linux) false else true, .HAVE_CMOCKA_SET_TEST_FILTER = false, .HAVE_LIBCRYPTO = false, .HAVE_LIBGCRYPT = false, .HAVE_LIBMBEDCRYPTO = true, .HAVE_PTHREAD = false, .HAVE_CMOCKA = false, .HAVE_GCC_THREAD_LOCAL_STORAGE = false, .HAVE_MSC_THREAD_LOCAL_STORAGE = false, .HAVE_FALLTHROUGH_ATTRIBUTE = true, .HAVE_UNUSED_ATTRIBUTE = true, .HAVE_WEAK_ATTRIBUTE = true, .HAVE_CONSTRUCTOR_ATTRIBUTE = true, .HAVE_DESTRUCTOR_ATTRIBUTE = true, .HAVE_GCC_VOLATILE_MEMORY_PROTECTION = true, .HAVE_COMPILER__FUNC__ = true, .HAVE_COMPILER__FUNCTION__ = true, .HAVE_GCC_BOUNDED_ATTRIBUTE = false, .WITH_GSSAPI = false, .WITH_ZLIB = false, .WITH_SFTP = false, .WITH_SERVER = with_server, .WITH_GEX = true, .WITH_INSECURE_NONE = true, .WITH_BLOWFISH_CIPHER = false, .DEBUG_CRYPTO = false, .DEBUG_PACKET = false, .WITH_PCAP = false, .DEBUG_CALLTRACE = false, .WITH_NACL = false, .WITH_PKCS11_URI = true, .WITH_PKCS11_PROVIDER = true, .WORDS_BIGENDIAN = false },
     );
 
     const version_header = b.addConfigHeader(.{
@@ -138,8 +34,8 @@ pub fn build(b: *std.Build) void {
         .libssh_VERSION_PATCH = 0,
     });
 
-    lib.addConfigHeader(config_header);
-    lib.addConfigHeader(version_header);
+    lib.root_module.addConfigHeader(config_header);
+    lib.root_module.addConfigHeader(version_header);
 
     const dep_libmbedtls = b.dependency("libmbedtls", .{
         .target = target,
@@ -158,6 +54,8 @@ pub fn build(b: *std.Build) void {
         "src/auth.c",
         "src/base64.c",
         "src/bignum.c",
+        "src/bind.c",
+        "src/bind_config.c",
         "src/buffer.c",
         "src/callbacks.c",
         "src/channels.c",
@@ -189,6 +87,7 @@ pub fn build(b: *std.Build) void {
         "src/pki.c",
         "src/pki_container_openssh.c",
         "src/poll.c",
+        "src/server.c",
         "src/session.c",
         "src/scp.c",
         "src/socket.c",
@@ -225,18 +124,18 @@ pub fn build(b: *std.Build) void {
         "src/threads/pthread.c",
     };
 
-    lib.addCSourceFiles(.{
+    lib.root_module.addCSourceFiles(.{
         .files = base_sources,
         .flags = flags,
     });
-    lib.addIncludePath(b.path("include"));
-    lib.linkLibrary(dep_libmbedtls.artifact("mbedcrypto"));
-    lib.linkLibrary(dep_libmbedtls.artifact("mbedtls"));
-    lib.linkLibrary(dep_libmbedtls.artifact("mbedx509"));
-    lib.linkLibC();
+    lib.root_module.addIncludePath(b.path("include"));
+    lib.root_module.linkLibrary(dep_libmbedtls.artifact("mbedcrypto"));
+    lib.root_module.linkLibrary(dep_libmbedtls.artifact("mbedtls"));
+    lib.root_module.linkLibrary(dep_libmbedtls.artifact("mbedx509"));
+    lib.root_module.link_libc = true;
 
     lib.installHeadersDirectory(b.path("include/libssh"), "libssh", .{});
-    lib.installHeader(version_header.getOutput(), "libssh/libssh_version.h");
+    lib.installConfigHeader(version_header);
 
     b.installArtifact(lib);
 }
